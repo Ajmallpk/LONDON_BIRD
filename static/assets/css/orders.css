@@ -1,0 +1,177 @@
+/* Order Management Styles */
+.order__table {
+    margin-bottom: 20px;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.order__table th {
+    cursor: pointer;
+    background-color: #f8f9fa;
+    font-weight: 500;
+    padding: 12px;
+    text-align: left;
+}
+
+.order__table th:hover {
+    background-color: #e9ecef;
+}
+
+.order__table td {
+    padding: 12px;
+    vertical-align: middle;
+}
+
+.order__table .sortable-ghost {
+    background-color: #f1f1f1;
+    opacity: 0.6;
+}
+
+.search__form .form-control {
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+.search__form .btn-primary {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.search__form .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.pagination {
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination .page-link {
+    color: #28a745;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.order__details.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.tracking__section .tracking__status {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+}
+
+.status-pending {
+    color: #ffc107;
+}
+
+.status-processing {
+    color: #17a2b8;
+}
+
+.status-completed, .status-delivered {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-canceled {
+    background-color: #dc3545;
+    color: white;
+}
+
+.status-returned, .status-return_requested, .status-return_denied {
+    background-color: #6c757d;
+    color: white;
+}
+
+.status-shipped, .status-out_for_delivery {
+    background-color: #007bff;
+    color: white;
+}
+
+.modal-content {
+    border-radius: 8px;
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-body .form-select, .modal-body .form-control {
+    border-radius: 5px;
+}
+
+.btn-primary {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-primary:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .order__table th, .order__table td {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+
+    .search__form .col-md-3, .search__form .col-md-2 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .order__details.card {
+        padding: 15px;
+    }
+
+    .modal-dialog {
+        margin: 1rem;
+    }
+}
+
+/* Print Styles for Invoice */
+@media print {
+    .account__left--sidebar, .breadcrumb__section, .btn, .modal {
+        display: none !important;
+    }
+
+    .order__details.card, .order__table {
+        border: none;
+    }
+
+    .tracking__section {
+        page-break-before: always;
+    }
+}
