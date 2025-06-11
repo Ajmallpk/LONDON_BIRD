@@ -1,0 +1,1647 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Suruchi - Checkout</title>
+  <meta name="description" content="Morden Bootstrap HTML5 Template">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/plugins/swiper-bundle.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/plugins/glightbox.min.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'assets/css/vendor/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <style>
+    .alert { padding: 10px; border-radius: 5px; margin-bottom: 10px; }
+    .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .address__card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .address__card--default { border-color: #007bff; }
+    .address__field { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+    .address__field:last-child { border-bottom: none; }
+    .address__icon { width: 24px; height: 24px; margin-right: 10px; color: #555; }
+    .address__label { font-weight: 500; color: #333; width: 120px; }
+    .address__value { flex: 1; color: #212529; }
+    .address__dropdown { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ced4da; font-size: 16px; margin-top: 15px; }
+    .address__card .badge { font-size: 12px; }
+    .btn-add-address { background-color: #90EE90; color: #000; border: none; padding: 8px 16px; font-weight: 500; }
+    .btn-add-address:hover { background-color: #78DA78; color: #000; }
+    .payment__card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .payment__option { display: flex; align-items: center; padding: 10px 0; }
+    .payment__icon { width: 24px; height: 24px; margin-right: 10px; color: #28a745; }
+    .payment__label { font-weight: 500; color: #333; }
+    .payment__restriction { color: #dc3545; font-size: 0.9rem; margin-left: 10px; }
+    .checkout__total--card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: #f8f9fa; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .checkout__total--table { width: 100%; }
+    .checkout__total--items td { padding: 8px 0; border-bottom: 1px solid #eee; }
+    .checkout__total--footer td { padding: 12px 0; font-weight: 600; font-size: 1.1rem; }
+    .checkout__total--title, .checkout__total--footer__title { color: #333; }
+    .checkout__total--amount, .checkout__total--footer__amount { color: #007bff; }
+    .coupon__section { margin-bottom: 20px; }
+    .coupon__form { display: flex; gap: 10px; align-items: center; }
+    .coupon__input { flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 5px; }
+    .coupon__btn { background-color: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 5px; }
+    .coupon__btn:hover { background-color: #0056b3; }
+    .coupon__remove-btn { background-color: #dc3545; color: white; padding: 8px 16px; border: none; border-radius: 5px; }
+    .coupon__remove-btn:hover { background-color: #c82333; }
+    .coupon__applied { margin-top: 10px; color: #28a745; font-weight: 500; }
+    .primary__btn { background-color: #007bff; padding: 10px 20px; transition: background-color 0.3s; }
+    .primary__btn:hover { background-color: #0056b3; }
+    .btn-return-cart { background-color: #6c757d; color: #fff; padding: 10px 20px; border: none; }
+    .btn-return-cart:hover { background-color: #5a6268; color: #fff; }
+    .cart__price--discounted { font-size: 1rem; color: #e74c3c; font-weight: 600; }
+    .cart__price--original { font-size: 0.9rem; color: #777; text-decoration: line-through; margin-left: 5px; }
+    .cart__savings { font-size: 0.9rem; color: #27ae60; margin-top: 5px; }
+    @media (max-width: 576px) {
+      .address__label { width: 100px; font-size: 14px; }
+      .address__value { font-size: 14px; }
+      .address__icon, .payment__icon { width: 20px; height: 20px; }
+      .btn-add-address, .primary__btn, .btn-return-cart { padding: 8px 14px; font-size: 14px; }
+      .checkout__total--card { padding: 15px; }
+      .checkout__total--footer td { font-size: 1rem; }
+      .coupon__form { flex-direction: column; align-items: stretch; }
+      .coupon__input, .coupon__btn, .coupon__remove-btn { width: 100%; }
+    }
+    .wallet-message, .cod-message {
+      display: none;
+      color: #dc3545;
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+    .payment__option {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .payment__icon {
+      margin-right: 10px;
+      font-size: 1.2rem;
+    }
+    .continue__shipping--btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    /* Styles for Coupon Dropdown and Details */
+    .coupon__dropdown {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .coupon__details {
+      margin-top: 15px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      display: none;
+    }
+    .coupon__details--field {
+      display: flex;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .coupon__details--field:last-child {
+      border-bottom: none;
+    }
+    .coupon__details--label {
+      font-weight: 500;
+      color: #333;
+      width: 120px;
+    }
+    .coupon__details--value {
+      flex: 1;
+      color: #212529;
+    }
+    .badge-used {
+      background-color: #7f8c8d;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+    .badge-available {
+      background-color: #27ae60;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+    .copy-btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: background-color 0.3s;
+    }
+    .copy-btn:hover {
+      background-color: #0056b3;
+    }
+    .copy-btn.copied {
+      background-color: #28a745;
+    }
+    /* Styles for Address Forms (Add and Edit) */
+    .new-address-form, .edit-address-form {
+        display: none;
+        margin-top: 15px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .new-address-form .form-group, .edit-address-form .form-group {
+        margin-bottom: 15px;
+    }
+    .new-address-form label, .edit-address-form label {
+        font-weight: 500;
+        color: #333;
+        display: block;
+        margin-bottom: 5px;
+    }
+    .new-address-form input, .edit-address-form input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    .new-address-form .btn, .edit-address-form .btn {
+        background-color: #007bff;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 5px;
+    }
+    .new-address-form .btn:hover, .edit-address-form .btn:hover {
+        background-color: #0056b3;
+    }
+    .new-address-message, .edit-address-message {
+        margin-bottom: 10px;
+    }
+    .btn-edit-address {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        font-weight: 500;
+        margin-top: 10px;
+    }
+    .btn-edit-address:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+  </style>
+</head>
+<body>
+  <div id="preloader">
+    <div id="ctn-preloader" class="ctn-preloader">
+      <div class="animation-preloader">
+        <div class="spinner"></div>
+        <div class="txt-loading">
+          <span data-text-preloader="L" class="letters-loading">L</span>
+          <span data-text-preloader="O" class="letters-loading">O</span>
+          <span data-text-preloader="A" class="letters-loading">A</span>
+          <span data-text-preloader="D" class="letters-loading">D</span>
+          <span data-text-preloader="I" class="letters-loading">I</span>
+          <span data-text-preloader="N" class="letters-loading">N</span>
+          <span data-text-preloader="G" class="letters-loading">G</span>
+        </div>
+      </div>
+      <div class="loader-section section-left"></div>
+      <div class="loader-section section-right"></div>
+    </div>
+  </div>
+
+    <header class="header__section">
+        <!-- <div class="header__topbar bg__secondary">
+        </div> -->
+        <div class="main__header header__sticky">
+            <div class="container-fluid">
+                <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
+                    <div class="offcanvas__header--menu__open ">
+                        <a class="offcanvas__header--menu__open--btn" href="javascript:void(0)" data-offcanvas>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon offcanvas__header--menu__open--svg" viewBox="0 0 512 512"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M80 160h352M80 256h352M80 352h352"/></svg>
+                            <span class="visually-hidden">Menu Open</span>
+                        </a>
+                    </div>
+                    <div class="main__logo">
+                        <h1>LONDON BIRD</h1>
+                    </div>
+                    
+                    <div class="header__account header__sticky--none">
+                        <ul class="d-flex">
+                            <li class="header__account--items">
+                                <a class="header__account--btn" href="{% url 'user_profile' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg"  width="26.51" height="23.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg> 
+                                    <span class="header__account--btn__text">My Account</span>
+                                </a>
+                            </li>
+                            <!-- <li class="header__account--items d-none d-lg-block">
+                                <a class="header__account--btn" href="wishlist.html">
+                                    <svg  xmlns="http://www.w3.org/2000/svg" width="28.51" height="23.443" viewBox="0 0 512 512"><path d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></path></svg>
+                                   <span class="header__account--btn__text">Wish List</span>
+                                   <span class="items__count">{{ wishlist_items }}</span> 
+                                </a>
+                            </li> -->
+                            <!-- <li class="header__account--items">
+                                <a class="header__account--btn minicart__open--btn" href="{% url 'cart' %}" >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 14.706 13.534">
+                                        <g  transform="translate(0 0)">
+                                        <g >
+                                            <path  data-name="Path 16787" d="M4.738,472.271h7.814a.434.434,0,0,0,.414-.328l1.723-6.316a.466.466,0,0,0-.071-.4.424.424,0,0,0-.344-.179H3.745L3.437,463.6a.435.435,0,0,0-.421-.353H.431a.451.451,0,0,0,0,.9h2.24c.054.257,1.474,6.946,1.555,7.33a1.36,1.36,0,0,0-.779,1.242,1.326,1.326,0,0,0,1.293,1.354h7.812a.452.452,0,0,0,0-.9H4.74a.451.451,0,0,1,0-.9Zm8.966-6.317-1.477,5.414H5.085l-1.149-5.414Z" transform="translate(0 -463.248)" fill="currentColor"/>
+                                            <path  data-name="Path 16788" d="M5.5,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,5.5,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,6.793,478.352Z" transform="translate(-1.191 -466.622)" fill="currentColor"/>
+                                            <path  data-name="Path 16789" d="M13.273,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,13.273,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,14.566,478.352Z" transform="translate(-2.875 -466.622)" fill="currentColor"/>
+                                        </g>
+                                        </g>
+                                    </svg>
+                                    <a href="{% url 'cart' %}"></a><span class="header__account--btn__text">My cart</span></a>   
+                                    <span class="items__count">{{ cart_items }}</span> 
+                                </a>
+                            </li> -->
+                        </ul>
+                    </div>
+                    <div class="header__menu d-none header__sticky--block d-lg-block">
+                        <nav class="header__menu--navigation">
+                            <ul class="d-flex">
+                                <li class="header__menu--items style2">
+                                    <!-- <a class="header__menu--link" href="{% url 'index' %}">Home  -->
+                                        <!-- <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12" height="7.41" viewBox="0 0 12 7.41">
+                                            <path  d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z" transform="translate(-6 -8.59)" fill="currentColor" opacity="0.7"/>
+                                        </svg> -->
+                                    </a>
+                                   
+                                </li>
+                                <!-- <li class="header__menu--items mega__menu--items style2">
+                                    <a class="header__menu--link" href="{% url 'shop' %}">Shop 
+                                      
+                                    </a>
+                                  
+                                </li> -->
+                            
+                                <!-- <li class="header__menu--items style2">
+                                    <a class="header__menu--link" href="contact.html">Contact </a>  
+                                </li> -->
+                            </ul> 
+                        </nav>
+                    </div>
+                    <!-- <div class="header__account header__account2 header__sticky--block">
+                        <ul class="d-flex">
+                            <li class="header__account--items header__account2--items  header__account--search__items d-none d-lg-block">
+                                <a class="header__account--btn search__open--btn" href="javascript:void(0)" data-offcanvas>
+                                    <svg class="header__search--button__svg" xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>  
+                                    <span class="visually-hidden">Search</span>
+                                </a>
+                            </li>
+                            <li class="header__account--items header__account2--items">
+                                <a class="header__account--btn" href="{% url 'user_profile' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg"  width="26.51" height="23.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg>
+                                    <span class="visually-hidden">My Account</span>
+                                </a>
+                            </li>
+                            <li class="header__account--items header__account2--items d-none d-lg-block">
+                                <a class="header__account--btn" href="wishlist.html">
+                                    <svg  xmlns="http://www.w3.org/2000/svg" width="28.51" height="23.443" viewBox="0 0 512 512"><path d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></path></svg>
+                                    <span class="items__count  wishlist style2">02</span> 
+                                </a>
+                            </li>
+                            <li class="header__account--items header__account2--items">
+                                <a class="header__account--btn minicart__open--btn" href="{% url 'cart' %}" >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 14.706 13.534">
+                                        <g  transform="translate(0 0)">
+                                        <g >
+                                            <path  data-name="Path 16787" d="M4.738,472.271h7.814a.434.434,0,0,0,.414-.328l1.723-6.316a.466.466,0,0,0-.071-.4.424.424,0,0,0-.344-.179H3.745L3.437,463.6a.435.435,0,0,0-.421-.353H.431a.451.451,0,0,0,0,.9h2.24c.054.257,1.474,6.946,1.555,7.33a1.36,1.36,0,0,0-.779,1.242,1.326,1.326,0,0,0,1.293,1.354h7.812a.452.452,0,0,0,0-.9H4.74a.451.451,0,0,1,0-.9Zm8.966-6.317-1.477,5.414H5.085l-1.149-5.414Z" transform="translate(0 -463.248)" fill="currentColor"/>
+                                            <path  data-name="Path 16788" d="M5.5,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,5.5,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,6.793,478.352Z" transform="translate(-1.191 -466.622)" fill="currentColor"/>
+                                            <path  data-name="Path 16789" d="M13.273,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,13.273,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,14.566,478.352Z" transform="translate(-2.875 -466.622)" fill="currentColor"/>
+                                        </g>
+                                        </g>
+                                    </svg>
+                                    <span class="items__count style2">{{ cart_items }}</span> 
+                                </a>
+                            </li>
+                        </ul>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        <div class="header__bottom">
+            <div class="container-fluid">
+                <div class="header__bottom--inner position__relative d-none d-lg-flex justify-content-between align-items-center">
+                    <div class="header__menu">
+                        <nav class="header__menu--navigation">
+                            <ul class="d-flex">
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="{% url 'index' %}">Home 
+                                       
+                                    </a>
+                                    
+                                </li>
+                                 <li class="header__menu--items">
+                                    <a class="header__menu--link" href="{% url 'shop' %}">shop
+                                       
+                                    </a>
+                                <!-- <li class="header__menu--items">
+                                    <a class="header__menu--link" href="about.html">About US </a>  
+                                </li>
+                               
+                             
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="contact.html">Contact </a>  
+                                </li> -->
+                            </ul>
+                        </nav>
+                    </div>
+                    <!-- <p class="header__discount--text"><img class="header__discount--icon__img" src="{% static 'assets/img/icon/lamp.png' %}" alt="lamp-img"> Special up to 60% Off all item</p> -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Start Offcanvas header menu -->
+       <div class="offcanvas__header">
+            <div class="offcanvas__inner">
+                <div class="offcanvas__logo">
+                    <a class="offcanvas__logo_link" href="{% url 'index' %}">
+                        <h1>LONDON BIRD</h1>
+                    </a>
+                    <button class="offcanvas__close--btn" data-offcanvas>close</button>
+                </div>
+                <nav class="offcanvas__menu">
+                    <ul class="offcanvas__menu_ul">
+                        <li class="offcanvas__menu_li">
+                            <a class="offcanvas__menu_item" href=" ">Home</a>
+                           
+                        </li>
+                        <li class="offcanvas__menu_li">
+                            <a class="offcanvas__menu_item" href="{% url 'shop' %}">Shop</a>
+                            
+                        </li>
+
+
+                        <li class="offcanvas__menu_li">
+                            <a class="offcanvas__menu_item" href="{% url 'view_wishlist' %}">My wishlist</a>
+                            
+                        </li>
+
+                        {% if user.is_authenticated %}
+                        <li class="header__menu--items" style="padding-left: 15px;">
+                            <form method="post" action="{% url 'logout' %}" style="margin: 0; display: inline;">
+                                {% csrf_token %}
+                            <button class="header__menu--link" style="padding-top: 15px; border: none; background: none; outline: none; color: red; font-weight: bold;" href="{% url 'logout' %}">Logout</button>
+                            </form>
+                        </li>
+                        {% else %}
+                        <li class="header__menu--items d-none d-xl-block">
+                            <a class="header__menu--link" href="{% url 'login' %}">login </a>  
+                        </li>
+                        <li class="header__menu--items">
+                            <a class="header__menu--link" href="{% url 'register' %}">register</a>
+                        </li>
+                        {% endif %}
+                        <!-- <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="about.html">About</a></li>
+                        <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="contact.html">Contact</a></li> -->
+                    </ul>
+                    
+                    <!-- <div class="offcanvas__account--items">
+                        <a class="offcanvas__account--items__btn d-flex align-items-center" href="{% url 'login' %}">
+                        <span class="offcanvas__account--items__icon"> 
+                            <svg xmlns="http://www.w3.org/2000/svg"  width="20.51" height="19.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg> 
+                            </span>
+                        <span class="offcanvas__account--items__label">Login / Register</span>
+                        </a>
+                    </div> -->
+                    <div class="language__currency">
+                        
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        <!-- End Offcanvas header menu -->
+
+        <!-- Start Offcanvas stikcy toolbar -->
+        <!-- <div class="offcanvas__stikcy--toolbar">
+            <ul class="d-flex justify-content-between">
+                <li class="offcanvas__stikcy--toolbar__list">
+                    <a class="offcanvas__stikcy--toolbar__btn" href="index.html">
+                    <span class="offcanvas__stikcy--toolbar__icon"> 
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="21.51" height="21.443" viewBox="0 0 22 17"><path fill="currentColor" d="M20.9141 7.93359c.1406.11719.2109.26953.2109.45703 0 .14063-.0469.25782-.1406.35157l-.3516.42187c-.1172.14063-.2578.21094-.4219.21094-.1406 0-.2578-.04688-.3515-.14062l-.9844-.77344V15c0 .3047-.1172.5625-.3516.7734-.2109.2344-.4687.3516-.7734.3516h-4.5c-.3047 0-.5742-.1172-.8086-.3516-.2109-.2109-.3164-.4687-.3164-.7734v-3.6562h-2.25V15c0 .3047-.11719.5625-.35156.7734-.21094.2344-.46875.3516-.77344.3516h-4.5c-.30469 0-.57422-.1172-.80859-.3516-.21094-.2109-.31641-.4687-.31641-.7734V8.46094l-.94922.77344c-.11719.09374-.24609.14062-.38672.14062-.16406 0-.30468-.07031-.42187-.21094l-.35157-.42187C.921875 8.625.875 8.50781.875 8.39062c0-.1875.070312-.33984.21094-.45703L9.73438.832031C10.1094.527344 10.5312.375 11 .375s.8906.152344 1.2656.457031l8.6485 7.101559zm-3.7266 6.50391V7.05469L11 1.99219l-6.1875 5.0625v7.38281h3.375v-3.6563c0-.3046.10547-.5624.31641-.7734.23437-.23436.5039-.35155.80859-.35155h3.375c.3047 0 .5625.11719.7734.35155.2344.211.3516.4688.3516.7734v3.6563h3.375z"></path></svg>
+                        </span>
+                    <span class="offcanvas__stikcy--toolbar__label">Home</span>
+                    </a>
+                </li>
+                <li class="offcanvas__stikcy--toolbar__list">
+                    <a class="offcanvas__stikcy--toolbar__btn" href="shop.html">
+                    <span class="offcanvas__stikcy--toolbar__icon"> 
+                        <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="18.51" height="17.443" viewBox="0 0 448 512"><path d="M416 32H32A32 32 0 0 0 0 64v384a32 32 0 0 0 32 32h384a32 32 0 0 0 32-32V64a32 32 0 0 0-32-32zm-16 48v152H248V80zm-200 0v152H48V80zM48 432V280h152v152zm200 0V280h152v152z"></path></svg>
+                        </span>
+                    <span class="offcanvas__stikcy--toolbar__label">Shop</span>
+                    </a>
+                </li>
+                <li class="offcanvas__stikcy--toolbar__list ">
+                    <a class="offcanvas__stikcy--toolbar__btn search__open--btn" href="javascript:void(0)" data-offcanvas>
+                        <span class="offcanvas__stikcy--toolbar__icon"> 
+                            <svg xmlns="http://www.w3.org/2000/svg"  width="22.51" height="20.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>   
+                        </span>
+                    <span class="offcanvas__stikcy--toolbar__label">Search</span>
+                    </a>
+                </li>
+                <li class="offcanvas__stikcy--toolbar__list">
+                    <a class="offcanvas__stikcy--toolbar__btn minicart__open--btn" href="{% url 'cart' %}" data-offcanvas>
+                        <span class="offcanvas__stikcy--toolbar__icon"> 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18.51" height="15.443" viewBox="0 0 18.51 15.443">
+                            <path  d="M79.963,138.379l-13.358,0-.56-1.927a.871.871,0,0,0-.6-.592l-1.961-.529a.91.91,0,0,0-.226-.03.864.864,0,0,0-.226,1.7l1.491.4,3.026,10.919a1.277,1.277,0,1,0,1.844,1.144.358.358,0,0,0,0-.049h6.163c0,.017,0,.034,0,.049a1.277,1.277,0,1,0,1.434-1.267c-1.531-.247-7.783-.55-7.783-.55l-.205-.8h7.8a.9.9,0,0,0,.863-.651l1.688-5.943h.62a.936.936,0,1,0,0-1.872Zm-9.934,6.474H68.568c-.04,0-.1.008-.125-.085-.034-.118-.082-.283-.082-.283l-1.146-4.037a.061.061,0,0,1,.011-.057.064.064,0,0,1,.053-.025h1.777a.064.064,0,0,1,.063.051l.969,4.34,0,.013a.058.058,0,0,1,0,.019A.063.063,0,0,1,70.03,144.853Zm3.731-4.41-.789,4.359a.066.066,0,0,1-.063.051h-1.1a.064.064,0,0,1-.063-.051l-.789-4.357a.064.064,0,0,1,.013-.055.07.07,0,0,1,.051-.025H73.7a.06.06,0,0,1,.051.025A.064.064,0,0,1,73.76,140.443Zm3.737,0L76.26,144.8a.068.068,0,0,1-.063.049H74.684a.063.063,0,0,1-.051-.025.064.064,0,0,1-.013-.055l.973-4.357a.066.066,0,0,1,.063-.051h1.777a.071.071,0,0,1,.053.025A.076.076,0,0,1,77.5,140.448Z" transform="translate(-62.393 -135.3)" fill="currentColor"/>
+                            </svg> 
+                        </span>
+                        <span class="offcanvas__stikcy--toolbar__label">Cart</span>
+                        <span class="items__count">3</span> 
+                    </a>
+                </li>
+                <li class="offcanvas__stikcy--toolbar__list">
+                    <a class="offcanvas__stikcy--toolbar__btn" href="wishlist.html">
+                        <span class="offcanvas__stikcy--toolbar__icon"> 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18.541" height="15.557" viewBox="0 0 18.541 15.557">
+                            <path  d="M71.775,135.51a5.153,5.153,0,0,1,1.267-1.524,4.986,4.986,0,0,1,6.584.358,4.728,4.728,0,0,1,1.174,4.914,10.458,10.458,0,0,1-2.132,3.808,22.591,22.591,0,0,1-5.4,4.558c-.445.282-.9.549-1.356.812a.306.306,0,0,1-.254.013,25.491,25.491,0,0,1-6.279-4.8,11.648,11.648,0,0,1-2.52-4.009,4.957,4.957,0,0,1,.028-3.787,4.629,4.629,0,0,1,3.744-2.863,4.782,4.782,0,0,1,5.086,2.447c.013.019.025.034.057.076Z" transform="translate(-62.498 -132.915)" fill="currentColor"/>
+                            </svg> 
+                        </span>
+                        <span class="offcanvas__stikcy--toolbar__label">Wishlist</span>
+                        <span class="items__count">{{ wishlist_items }}</span> 
+                    </a>
+                </li>
+            </ul>
+        </div> -->
+        <!-- End Offcanvas stikcy toolbar -->
+
+        <!-- Start offCanvas minicart -->
+        <div class="offCanvas__minicart">
+            <div class="minicart__header ">
+                <div class="minicart__header--top d-flex justify-content-between align-items-center">
+                    <h2 class="minicart__title h3"> Shopping Cart</h2>
+                    <button class="minicart__close--btn" aria-label="minicart close button" data-offcanvas> 
+                        <svg class="minicart__close--icon" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 512 512"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M368 368L144 144M368 144L144 368"/></svg>
+                    </button>
+                </div>
+                <p class="minicart__header--desc">Clothing and fashion products are limited</p>
+            </div>
+            <div class="minicart__product">
+                <div class="minicart__product--items d-flex">
+                    <div class="minicart__thumb">
+                        <a href="product-details.html"><img src="{% static 'assets/img/product/product1.png' %}" alt="prduct-img"></a>
+                    </div>
+                    <div class="minicart__text">
+                        <h3 class="minicart__subtitle h4"><a href="product-details.html">Oversize Cotton Dress</a></h3>
+                        <span class="color__variant"><b>Color:</b> Beige</span>
+                        <div class="minicart__price">
+                            <span class="current__price">$125.00</span>
+                            <span class="old__price">$140.00</span>
+                        </div>
+                        <div class="minicart__text--footer d-flex align-items-center">
+                            <div class="quantity__box minicart__quantity">
+                                <button type="button"  class="quantity__value decrease" aria-label="quantity value" value="Decrease Value">-</button>
+                                <label>
+                                    <input type="number" class="quantity__number" value="1" data-counter />
+                                </label>
+                                <button type="button" class="quantity__value increase"  value="Increase Value">+</button>
+                            </div>
+                            <button class="minicart__product--remove">Remove</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="minicart__product--items d-flex">
+                    <div class="minicart__thumb">
+                        <a href="product-details.html"><img src="{% static 'assets/img/product/product2.png' %}" alt="prduct-img"></a>
+                    </div>
+                    <div class="minicart__text">
+                        <h3 class="minicart__subtitle h4"><a href="product-details.html">Boxy Denim Jacket</a></h3>
+                        <span class="color__variant"><b>Color:</b> Green</span>
+                        <div class="minicart__price">
+                            <span class="current__price">$115.00</span>
+                            <span class="old__price">$130.00</span>
+                        </div>
+                        <div class="minicart__text--footer d-flex align-items-center">
+                            <div class="quantity__box minicart__quantity">
+                                <button type="button" class="quantity__value decrease" aria-label="quantity value" value="Decrease Value">-</button>
+                                <label>
+                                    <input type="number" class="quantity__number" value="1" data-counter />
+                                </label>
+                                <button type="button" class="quantity__value increase" aria-label="quantity value" value="Increase Value">+</button>
+                            </div>
+                            <button class="minicart__product--remove">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="minicart__amount">
+                <div class="minicart__amount_list d-flex justify-content-between">
+                    <span>Sub Total:</span>
+                    <span><b>$240.00</b></span>
+                </div>
+                <div class="minicart__amount_list d-flex justify-content-between">
+                    <span>Total:</span>
+                    <span><b>$240.00</b></span>
+                </div>
+            </div>
+            <div class="minicart__conditions text-center">
+                <input class="minicart__conditions--input" id="accept" type="checkbox">
+                <label class="minicart__conditions--label" for="accept">I agree with the <a class="minicart__conditions--link" href="privacy-policy.html">Privacy and Policy</a></label>
+            </div>
+            <div class="minicart__button d-flex justify-content-center">
+                <a class="primary__btn minicart__button--link" href="{% url 'cart' %}">View cart</a>
+                <a class="primary__btn minicart__button--link" href="checkout.html">Checkout</a>
+            </div>
+        </div>
+        <!-- End offCanvas minicart -->
+
+        <!-- Start serch box area -->
+        <div class="predictive__search--box ">
+            <div class="predictive__search--box__inner">
+                <h2 class="predictive__search--title">Search Products</h2>
+                <form class="predictive__search--form" action="#">
+                    <label>
+                        <input class="predictive__search--input" placeholder="Search Here" type="text">
+                    </label>
+                    <button class="predictive__search--button" aria-label="search button" type="submit"><svg class="header__search--button__svg" xmlns="http://www.w3.org/2000/svg" width="30.51" height="25.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>  </button>
+                </form>
+            </div>
+            <button class="predictive__search--close__btn" aria-label="search close button" data-offcanvas>
+                <svg class="predictive__search--close__icon" xmlns="http://www.w3.org/2000/svg" width="40.51" height="30.443"  viewBox="0 0 512 512"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M368 368L144 144M368 144L144 368"/></svg>
+            </button>
+        </div>
+        <!-- End serch box area -->
+
+    </header>
+
+  <div class="checkout__page--area">
+    <div class="container">
+      <div class="checkout__page--inner d-flex">
+        <div class="main checkout__mian">
+          <header class="main__header checkout__mian--header mb-30">
+            <!-- <h1>LONDON BIRD </h1> -->
+            <ol class="breadcrumb checkout__breadcrumb d-flex">
+              <li class="breadcrumb__item breadcrumb__item--completed d-flex align-items-center">
+                <a class="breadcrumb__link" href="{% url 'index' %}">Home</a>
+                <svg class="breadcrumb__chevron-icon" xmlns="http://www.w3.org/2000/svg" width="17.007" height="16.831" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M184 112l144 144-144 144"></path></svg>
+              </li>
+              <li class="breadcrumb__item breadcrumb__item--completed d-flex align-items-center">
+                <a class="breadcrumb__link" href="{% url 'cart' %}">Cart</a>
+                <svg class="breadcrumb__chevron-icon" xmlns="http://www.w3.org/2000/svg" width="17.007" height="16.831" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M184 112l144 144-144 144"></path></svg>
+              </li>
+            </ol>
+            <details class="order__summary--mobile__version">
+              <summary class="order__summary--toggle border-radius-5">
+                <span class="order__summary--toggle__inner">
+                  <span class="order__summary--toggle__icon">
+                    <svg width="20" height="19" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M17.178 13.088H5.453c-.454 0-.91-.364-.91-.818L3.727 1.818H0V0h4.544c.455 0 .91.364.91.818l.09 1.272h13.45c.274 0 .547.09.73.364.18.182.27.454.18.727l-1.817 9.18c-.09.455-.455.728-.91.728zM6.27 11.27h10.09l1.454-7.362H5.634l.637 7.362zm.092 7.715c1.004 0 1.818-.813 1.818-1.817s-.814-1.818-1.818-1.818-1.818.814-1.818 1.818.814 1.817 1.818 1.817zm9.18 0c1.004 0 1.817-.813 1.817-1.817s-.814-1.818-1.818-1.818-1.818.814-1.818 1.818.814 1.817 1.818 1.817z" fill="currentColor"></path>
+                    </svg>
+                  </span>
+                  <span class="order__summary--toggle__text show">
+                    <span>Show order summary</span>
+                    <svg width="11" height="6" xmlns="http://www.w3.org/2000/svg" class="order-summary-toggle__dropdown" fill="currentColor"><path d="M.504 1.813l4.358 3.845.496.438.496-.438 4.642-4.096L9.504.438 4.862 4.534h.992L1.496.69.504 1.812z"></path></svg>
+                  </span>
+                  <span class="order__summary--final__price">₹{{ final_total|floatformat:2 }}</span>
+                </span>
+              </summary>
+              <div class="order__summary--section">
+                <div class="cart__table checkout__product--table">
+                  <table class="summary__table">
+                    <tbody class="summary__table--body">
+                      {% for item in cart_items %}
+                      <tr class="summary__table--items">
+                        <td class="summary__table--list">
+                          <div class="product__image two d-flex align-items-center">
+                            <div class="product__thumbnail border-radius-5">
+                              <a href="{% url 'product_details' item.variant.product.id %}">
+                                <img class="border-radius-5" src="{{ item.variant.product.image_1.url }}" alt="{{ item.variant.product.name }}">
+                              </a>
+                              <span class="product__thumbnail--quantity">{{ item.quantity }}</span>
+                            </div>
+                            <div class="product__description">
+                              <h3 class="product__description--name h4"><a href="{% url 'product_details' item.variant.product.id %}">{{ item.variant.product.name }}</a></h3>
+                              <span class="product__description--variant" style="color: #000;">
+                                COLOR: {{ item.variant.color }} | SIZE: {{ item.size.size }}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="summary__table--list">
+                          <span class="cart__price">
+                            <span class="cart__price--discounted">₹{{ item.get_total_discounted_price|floatformat:2 }}</span>
+                            {% if item.get_total_discounted_price != item.get_total_original_price %}
+                            <span class="cart__price--original">₹{{ item.get_total_original_price|floatformat:2 }}</span>
+                            <div class="cart__savings">You Save: ₹{{ item.get_savings|floatformat:2 }}</div>
+                            {% endif %}
+                          </span>
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr><td colspan="2">No items in cart.</td></tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                <div class="checkout__total checkout__total--card">
+                  <table class="checkout__total--table">
+                    <tbody class="checkout__total--body">
+                      <tr class="checkout__total--items">
+                        <td class="checkout__total--title text-left">Subtotal (Original)</td>
+                        <td class="checkout__total--amount text-right">₹{{ subtotal_original|floatformat:2 }}</td>
+                      </tr>
+                      <tr class="checkout__total--items">
+                        <td class="checkout__total--title text-left">Subtotal (Discounted)</td>
+                        <td class="checkout__total--amount text-right">₹{{ subtotal_discounted|floatformat:2 }}</td>
+                      </tr>
+                      <tr class="checkout__total--items">
+                        <td class="checkout__total--title text-left">You Save</td>
+                        <td class="checkout__total--amount text-right text-success">₹{{ total_savings|floatformat:2 }}</td>
+                      </tr>
+                      <tr class="checkout__total--items">
+                        <td class="checkout__total--title text-left">Shipping</td>
+                        <td class="checkout__total--amount text-right">₹{{ shipping|floatformat:2 }}</td>
+                      </tr>
+                      {% if coupon_discount > 0 %}
+                      <tr class="checkout__total--items">
+                        <td class="checkout__total--title text-left">Coupon Discount</td>
+                        <td class="checkout__total--amount text-right text-success">-₹{{ coupon_discount|floatformat:2 }}</td>
+                      </tr>
+                      {% endif %}
+                    </tbody>
+                    <tfoot class="checkout__total--footer">
+                      <tr class="checkout__total--footer__items">
+                        <td class="checkout__total--footer__title text-left">Total</td>
+                        <td class="checkout__total--footer__amount text-right">₹{{ final_total|floatformat:2 }}</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </details>
+          </header>
+          <main class="main__content_wrapper">
+            {% if messages %}
+              <div class="messages">
+                {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="coupon__section">
+              <div class="section__header mb-25">
+                <h3 class="section__header--title">Apply Coupon</h3>
+              </div>
+              {% if coupon %}
+                <div class="coupon__applied">
+                  Coupon Applied: {{ coupon.code }} (Discount: ₹{{ coupon_discount|floatformat:2 }})
+                  <form action="{% url 'remove_coupon' %}" method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="coupon__remove-btn">Remove</button>
+                  </form>
+                </div>
+              {% else %}
+                <form action="{% url 'apply_coupon' %}" method="POST" class="coupon__form" id="coupon-form">
+                  {% csrf_token %}
+                  <input type="text" name="coupon_code" id="coupon-code-input" class="coupon__input" placeholder="Enter coupon code" value="">
+                  <button type="submit" class="coupon__btn" id="apply-coupon-btn">Apply</button>
+                </form>
+              {% endif %}
+
+              <!-- Available Coupons Dropdown -->
+              <div class="available-coupons mt-4">
+                <label for="coupon_select" class="form-label">Available Coupons</label>
+              <select id="coupon_select" class="coupon__dropdown">
+  <option value="" selected>Select a coupon</option>
+  {% for coupon in coupons %}
+    {% if not coupon.id in used_coupon_ids %}
+      <option value="{{ coupon.id }}"
+              data-code="{{ coupon.code }}"
+              data-discount-type="{{ coupon.discount_type }}"
+              data-discount-amount="{{ coupon.discount_amount|floatformat:2 }}"
+              data-max-discount="{{ coupon.max_discount|floatformat:2 }}"
+              data-min-purchase="{{ coupon.min_purchase|floatformat:2 }}"
+              data-valid-until="{{ coupon.valid_until|date:'Y-m-d H:i' }}"
+              data-status="available">
+        {{ coupon.code }} - 
+        {% if coupon.discount_type == 'Fixed' %}
+          ₹{{ coupon.discount_amount|floatformat:2 }} off
+        {% else %}
+          {{ coupon.discount_amount|floatformat:0 }}% off (Max ₹{{ coupon.max_discount|floatformat:2 }})
+        {% endif %}
+        (Min ₹{{ coupon.min_purchase|floatformat:2 }})
+      </option>
+    {% else %}
+      <option value="{{ coupon.id }}"
+              data-code="{{ coupon.code }}"
+              data-discount-type="{{ coupon.discount_type }}"
+              data-discount-amount="{{ coupon.discount_amount|floatformat:2 }}"
+              data-max-discount="{{ coupon.max_discount|floatformat:2 }}"
+              data-min-purchase="{{ coupon.min_purchase|floatformat:2 }}"
+              data-valid-until="{{ coupon.valid_until|date:'Y-m-d H:i' }}"
+              data-status="used" disabled>
+        {{ coupon.code }} - 
+        {% if coupon.discount_type == 'Fixed' %}
+          ₹{{ coupon.discount_amount|floatformat:2 }} off
+        {% else %}
+          {{ coupon.discount_amount|floatformat:0 }}% off (Max ₹{{ coupon.max_discount|floatformat:2 }})
+        {% endif %}
+        (Min ₹{{ coupon.min_purchase|floatformat:2 }}) - Used
+      </option>
+    {% endif %}
+  {% empty %}
+    <option value="" disabled>No available coupons at the moment.</option>
+  {% endfor %}
+</select>
+                <div id="coupon_details" class="coupon__details">
+                  <div class="coupon__details--field">
+                    <span class="coupon__details--label">Code</span>
+                    <span class="coupon__details--value" id="coupon_code"></span>
+                  </div>
+                  <div class="coupon__details--field">
+                    <span class="coupon__details--label">Discount</span>
+                    <span class="coupon__details--value" id="coupon_discount"></span>
+                  </div>
+                  <div class="coupon__details--field">
+                    <span class="coupon__details--label">Min Purchase</span>
+                    <span class="coupon__details--value" id="coupon_min_purchase"></span>
+                  </div>
+                  <div class="coupon__details--field">
+                    <span class="coupon__details--label">Valid Until</span>
+                    <span class="coupon__details--value" id="coupon_valid_until"></span>
+                  </div>
+                  <div class="coupon__details--field">
+                    <span class="coupon__details--label">Status</span>
+                    <span class="coupon__details--value" id="coupon_status"></span>
+                  </div>
+                  <button id="copy_coupon_btn" class="copy-btn" style="display: none;">Apply Coupon</button>
+                </div>
+              </div>
+            </div>
+            <form action="{% url 'place_order' %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="shipping_address" id="shipping_address_input" value="{% if default_address %}{{ default_address.id }}{% endif %}">
+              <div class="checkout__content--step section__shipping--address">
+                <div class="section__header mb-25 d-flex align-items-center justify-content-between">
+                  <h3 class="section__header--title">Shipping Address</h3>
+                  <div>
+                    <button type="button" class="btn btn-add-address" id="toggle-new-address">Add New Address Here</button>
+                    <a href="{% url 'user_address' %}?next=checkout" class="btn btn-add-address">Manage Addresses</a>
+                  </div>
+                </div>
+                <div class="section__shipping--address__content">
+                  <!-- New Address Form -->
+                  <div class="new-address-form" id="new-address-form">
+                    <div id="new-address-message" class="new-address-message"></div>
+                    <div class="form-group">
+                      <label for="name">Full Name</label>
+                      <input type="text" name="name" id="name" placeholder="Full Name" value="{{ new_address_data.name|default_if_none:'' }}">
+                    </div>
+                    <div class="form-group">
+                      <label for="street_address">Street Address</label>
+                      <input type="text" name="street_address" id="street_address" placeholder="Street Address" value="{{ new_address_data.street_address|default_if_none:'' }}">
+                    </div>
+                    <div class="form-group">
+                      <label for="city">City</label>
+                      <input type="text" name="city" id="city" placeholder="City" value="{{ new_address_data.city|default_if_none:'' }}">
+                    </div>
+                    <div class="form-group">
+                      <label for="state">State</label>
+                      <input type="text" name="state" id="state" placeholder="State" value="{{ new_address_data.state|default_if_none:'' }}">
+                    </div>
+                    <div class="form-group">
+                      <label for="country">Country</label>
+                      <input type="text" name="country" id="country" placeholder="Country" value="{{ new_address_data.country|default_if_none:'' }}">
+                    </div>
+                    <div class="form-group">
+                      <label for="postal_code">Postal Code</label>
+                      <input type="text" name="postal_code" id="postal_code" placeholder="Postal Code" value="{{ new_address_data.postal_code|default_if_none:'' }}">
+                    </div>
+                    <div class="form-group">
+                      <label for="phone">Phone Number</label>
+                      <input type="text" name="phone" id="phone" placeholder="Phone Number" value="{{ new_address_data.phone|default_if_none:'' }}">
+                    </div>
+                    <button type="button" class="btn" id="save-new-address">Save Address</button>
+                  </div>
+
+                  <!-- Edit Address Form -->
+                  <div class="edit-address-form" id="edit-address-form">
+                    <div id="edit-address-message" class="edit-address-message"></div>
+                    <input type="hidden" id="edit_address_id">
+                    <div class="form-group">
+                      <label for="edit_name">Full Name</label>
+                      <input type="text" name="name" id="edit_name" placeholder="Full Name">
+                    </div>
+                    <div class="form-group">
+                      <label for="edit_street_address">Street Address</label>
+                      <input type="text" name="street_address" id="edit_street_address" placeholder="Street Address">
+                    </div>
+                    <div class="form-group">
+                      <label for="edit_city">City</label>
+                      <input type="text" name="city" id="edit_city" placeholder="City">
+                    </div>
+                    <div class="form-group">
+                      <label for="edit_state">State</label>
+                      <input type="text" name="state" id="edit_state" placeholder="State">
+                    </div>
+                    <div class="form-group">
+                      <label for="edit_country">Country</label>
+                      <input type="text" name="country" id="edit_country" placeholder="Country">
+                    </div>
+                    <div class="form-group">
+                      <label for="edit_postal_code">Postal Code</label>
+                      <input type="text" name="postal_code" id="edit_postal_code" placeholder="Postal Code">
+                    </div>
+                    <div class="form-group">
+                      <label for="edit_phone">Phone Number</label>
+                      <input type="text" name="phone" id="edit_phone" placeholder="Phone Number">
+                    </div>
+                    <button type="button" class="btn" id="save-edit-address">Save Changes</button>
+                  </div>
+
+                  <!-- Address Display (Always Present) -->
+                  <div class="address__card {% if default_address %}address__card--default{% endif %}" id="address_display">
+                    {% if default_address %}
+                      <div class="address__field">
+                        <i class="bi bi-person address__icon"></i>
+                        <span class="address__label">Name</span>
+                        <span class="address__value" id="address_name">{{ default_address.name }} {% if default_address.is_default %}<span class="badge bg-primary ms-2">Default</span>{% endif %}</span>
+                      </div>
+                      <div class="address__field">
+                        <i class="bi bi-geo-alt address__icon"></i>
+                        <span class="address__label">Street Address</span>
+                        <span class="address__value" id="address_street">{{ default_address.street_address }}</span>
+                      </div>
+                      <div class="address__field">
+                        <i class="bi bi-building address__icon"></i>
+                        <span class="address__label">City</span>
+                        <span class="address__value" id="address_city">{{ default_address.city }}</span>
+                      </div>
+                      <div class="address__field">
+                        <i class="bi bi-map address__icon"></i>
+                        <span class="address__label">State</span>
+                        <span class="address__value" id="address_state">{{ default_address.state }}</span>
+                      </div>
+                      <div class="address__field">
+                        <i class="bi bi-mailbox address__icon"></i>
+                        <span class="address__label">Postal Code</span>
+                        <span class="address__value" id="address_postal">{{ default_address.postal_code }}</span>
+                      </div>
+                      <div class="address__field">
+                        <i class="bi bi-globe address__icon"></i>
+                        <span class="address__label">Country</span>
+                        <span class="address__value" id="address_country">{{ default_address.country }}</span>
+                      </div>
+                      <div class="address__field">
+                        <i class="bi bi-telephone address__icon"></i>
+                        <span class="address__label">Phone</span>
+                        <span class="address__value" id="address_phone">{{ default_address.phone }}</span>
+                      </div>
+                      <button type="button" class="btn-edit-address" id="edit-address-btn" data-address-id="{{ default_address.id }}">Edit Address</button>
+                    {% else %}
+                      <p>Please add an address to proceed.</p>
+                    {% endif %}
+                  </div>
+
+                  <!-- Address Dropdown (Always Present) -->
+                  <div class="form-group">
+                    <label for="address_select" class="form-label">Change Address</label>
+                    <select id="address_select" class="address__dropdown" name="address_select">
+                      {% for address in addresses %}
+                        <option value="{{ address.id }}"
+                                data-name="{{ address.name }}"
+                                data-street="{{ address.street_address }}"
+                                data-city="{{ address.city }}"
+                                data-state="{{ address.state }}"
+                                data-postal="{{ address.postal_code }}"
+                                data-country="{{ address.country }}"
+                                data-phone="{{ address.phone }}"
+                                data-is-default="{{ address.is_default|yesno:'true,false' }}"
+                                {% if address.id == default_address.id or address.id == selected_address_id %}selected{% endif %}>
+                          {{ address.name }} - {{ address.street_address }}
+                        </option>
+                      {% empty %}
+                        <option value="">No addresses available</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="checkout__content--step section__payment--method">
+                <div class="section__header mb-25">
+                  <h3 class="section__header--title">Payment Method</h3>
+                </div>
+                <div class="payment__card">
+                  <div class="payment__option">
+                    <i class="bi bi-cash-stack payment__icon"></i>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="payment_method" id="cod" value="Cash on Delivery" {% if allow_cod %}{% if not default_address %}checked{% endif %}{% else %}disabled{% endif %} required>
+                      <label class="form-check-label payment__label" for="cod">
+                        Cash on Delivery
+                        {% if not allow_cod %}
+                          <span class="payment__restriction">(Not available for orders above ₹1000)</span>
+                        {% endif %}
+                      </label>
+                    </div>
+                  </div>
+                  <div class="payment__option">
+                    <i class="bi bi-credit-card payment__icon"></i>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="payment_method" id="razorpay" value="Razorpay" {% if not allow_cod and default_address %}checked{% endif %} required>
+                      <label class="form-check-label payment__label" for="razorpay">Razorpay</label>
+                    </div>
+                  </div>
+                  <div class="payment__option">
+                    <i class="bi bi-wallet2 payment__icon"></i>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="payment_method" id="wallet" value="Wallet" required>
+                      <label class="form-check-label payment__label" for="wallet">Wallet (Balance: ₹{{ wallet_balance|floatformat:2 }})</label>
+                    </div>
+                  </div>
+                  <div id="wallet-message" class="wallet-message">
+                    Insufficient wallet balance. Please add funds or choose another payment method.
+                  </div>
+                  <div id="cod-message" class="cod-message">
+                    Cash on Delivery is not available for orders above ₹1000. Please select another payment method.
+                  </div>
+                </div>
+              </div>
+              <div class="checkout__content--step__footer d-flex align-items-center" style="padding-top: 11px;">
+                <button type="submit" id="placeOrderBtn" class="continue__shipping--btn primary__btn border-radius-5" style="padding-top: 1px;"><i class="bi bi-check-circle me-2"></i>Place Order</button>
+                <a class="btn btn-return-cart border-radius-5" href="{% url 'cart' %}"><i class="bi bi-arrow-left me-2"></i>Return to Cart</a>
+              </div>
+            </form>
+          </main>
+          <footer class="main__footer checkout__footer">
+            <p class="copyright__content">Copyright © 2022 <a class="copyright__content--link text__primary" href="{% url 'index' %}">Suruchi</a>. All Rights Reserved. Design By Suruchi</p>
+          </footer>
+        </div>
+        <aside class="checkout__sidebar sidebar">
+          <div class="cart__table checkout__product--table">
+            <table class="cart__table--inner">
+              <tbody class="cart__table--body">
+                {% for item in cart_items %}
+                <tr class="cart__table--body__items">
+                  <td class="cart__table--body__list">
+                    <div class="product__image two d-flex align-items-center">
+                      <div class="product__thumbnail border-radius-5">
+                        <a href="{% url 'product_details' item.variant.product.id %}">
+                          <img class="border-radius-5" src="{{ item.variant.product.image_1.url }}" alt="{{ item.variant.product.name }}">
+                        </a>
+                        <span class="product__thumbnail--quantity">{{ item.quantity }}</span>
+                      </div>
+                      <div class="product__description">
+                        <h3 class="product__description--name h4"><a href="{% url 'product_details' item.variant.product.id %}">{{ item.variant.product.name }}</a></h3>
+                        <span class="product__description--variant" style="color: #000;">
+                          COLOR: {{ item.variant.color }} | SIZE: {{ item.size.size }}
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cart__table--body__list">
+                    <span class="cart__price">
+                      <span class="cart__price--discounted">₹{{ item.get_total_discounted_price|floatformat:2 }}</span>
+                      {% if item.get_total_discounted_price != item.get_total_original_price %}
+                      <span class="cart__price--original">₹{{ item.get_total_original_price|floatformat:2 }}</span>
+                      <div class="cart__savings">You Save: ₹{{ item.get_savings|floatformat:2 }}</div>
+                      {% endif %}
+                    </span>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="2">No items in cart.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="checkout__total checkout__total--card">
+            <table class="checkout__total--table">
+              <tbody class="checkout__total--body">
+                <tr class="checkout__total--items">
+                  <td class="checkout__total--title text-left">Subtotal (Original)</td>
+                  <td class="checkout__total--amount text-right">₹{{ subtotal_original|floatformat:2 }}</td>
+                </tr>
+                <tr class="checkout__total--items">
+                  <td class="checkout__total--title text-left">Subtotal (Discounted)</td>
+                  <td class="checkout__total--amount text-right">₹{{ subtotal_discounted|floatformat:2 }}</td>
+                </tr>
+                <tr class="checkout__total--items">
+                  <td class="checkout__total--title text-left">You Save</td>
+                  <td class="checkout__total--amount text-right text-success">₹{{ total_savings|floatformat:2 }}</td>
+                </tr>
+                <tr class="checkout__total--items">
+                  <td class="checkout__total--title text-left">Shipping</td>
+                  <td class="checkout__total--amount text-right">₹{{ shipping|floatformat:2 }}</td>
+                </tr>
+                {% if coupon_discount > 0 %}
+                <tr class="checkout__total--items">
+                  <td class="checkout__total--title text-left">Coupon Discount</td>
+                  <td class="checkout__total--amount text-right text-success">-₹{{ coupon_discount|floatformat:2 }}</td>
+                </tr>
+                {% endif %}
+              </tbody>
+              <tfoot class="checkout__total--footer">
+                <tr class="checkout__total--footer__items">
+                  <td class="checkout__total--footer__title text-left">Total</td>
+                  <td class="checkout__total--footer__amount text-right">₹{{ final_total|floatformat:2 }}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
+
+  <script src="{% static 'assets/js/vendor/popper.js' %}" defer="defer"></script>
+  <script src="{% static 'assets/js/vendor/bootstrap.min.js' %}" defer="defer"></script>
+  <script src="{% static 'assets/js/plugins/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'assets/js/plugins/glightbox.min.js' %}"></script>
+  <script src="{% static 'assets/js/script.js' %}"></script>
+
+  <script>
+    const userAddressUrl = "{% url 'user_address' %}";
+    const checkoutUrl = "{% url 'checkout' %}";
+    const addressSelect = document.getElementById('address_select');
+    const newAddressMessage = document.getElementById('new-address-message');
+    const editAddressMessage = document.getElementById('edit-address-message');
+    const shippingAddressInput = document.getElementById('shipping_address_input');
+
+    // Function to update the UI directly with address data
+    function updateAddressDisplayWithData(address) {
+      console.log('updateAddressDisplayWithData called with address:', address);
+      const displayDiv = document.getElementById('address_display');
+      if (!displayDiv) {
+        console.error('address_display element not found');
+        return;
+      }
+      if (!address || !address.id) {
+        console.warn('No valid address data provided for display:', address);
+        displayDiv.innerHTML = '<p>Please add an address to proceed.</p>';
+        displayDiv.className = 'address__card';
+        return;
+      }
+
+      // Update the hidden input for form submission
+      shippingAddressInput.value = address.id;
+      console.log('Updated shippingAddressInput value:', shippingAddressInput.value);
+
+      // Update the UI
+      displayDiv.innerHTML = `
+        <div class="address__field">
+          <i class="bi bi-person address__icon"></i>
+          <span class="address__label">Name</span>
+          <span class="address__value" id="address_name">${address.name} ${address.is_default ? '<span class="badge bg-primary ms-2">Default</span>' : ''}</span>
+        </div>
+        <div class="address__field">
+          <i class="bi bi-geo-alt address__icon"></i>
+          <span class="address__label">Street Address</span>
+          <span class="address__value" id="address_street">${address.street_address}</span>
+        </div>
+        <div class="address__field">
+          <i class="bi bi-building address__icon"></i>
+          <span class="address__label">City</span>
+          <span class="address__value" id="address_city">${address.city}</span>
+        </div>
+        <div class="address__field">
+          <i class="bi bi-map address__icon"></i>
+          <span class="address__label">State</span>
+          <span class="address__value" id="address_state">${address.state}</span>
+        </div>
+        <div class="address__field">
+          <i class="bi bi-mailbox address__icon"></i>
+          <span class="address__label">Postal Code</span>
+          <span class="address__value" id="address_postal">${address.postal_code}</span>
+        </div>
+        <div class="address__field">
+          <i class="bi bi-globe address__icon"></i>
+          <span class="address__label">Country</span>
+          <span class="address__value" id="address_country">${address.country}</span>
+        </div>
+        <div class="address__field">
+          <i class="bi bi-telephone address__icon"></i>
+          <span class="address__label">Phone</span>
+          <span class="address__value" id="address_phone">${address.phone}</span>
+        </div>
+        <button type="button" class="btn-edit-address" id="edit-address-btn" data-address-id="${address.id}">Edit Address</button>
+      `;
+      displayDiv.className = 'address__card' + (address.is_default ? ' address__card--default' : '');
+      console.log('Updated address_display innerHTML:', displayDiv.innerHTML);
+
+      // Re-attach the edit button event listener
+      const editButton = document.getElementById('edit-address-btn');
+      if (editButton) {
+        editButton.addEventListener('click', toggleEditAddressForm);
+        console.log('Edit address button event listener attached');
+      } else {
+        console.error('Edit address button not found after DOM update');
+      }
+    }
+
+    // Function to update the address dropdown with a new address
+    function updateAddressDropdown(newAddress) {
+      console.log('updateAddressDropdown called with newAddress:', newAddress);
+      if (!addressSelect) {
+        console.error('addressSelect element not found');
+        return;
+      }
+
+      // Remove the "No addresses available" option if it exists
+      if (addressSelect.options.length === 1 && addressSelect.options[0].value === '') {
+        addressSelect.innerHTML = '';
+      }
+
+      // Add the new address to the dropdown
+      const option = document.createElement('option');
+      option.value = newAddress.id;
+      option.textContent = `${newAddress.name} - ${newAddress.street_address}`;
+      option.dataset.name = newAddress.name;
+      option.dataset.street = newAddress.street_address;
+      option.dataset.city = newAddress.city;
+      option.dataset.state = newAddress.state;
+      option.dataset.postal = newAddress.postal_code;
+      option.dataset.country = newAddress.country;
+      option.dataset.phone = newAddress.phone;
+      option.dataset.isDefault = newAddress.is_default;
+      addressSelect.appendChild(option);
+      console.log('Added new address to dropdown, options:', addressSelect.options);
+
+      // Select the new address
+      addressSelect.value = newAddress.id;
+      console.log('Selected new address in dropdown, value:', addressSelect.value);
+    }
+
+    // Function to refresh the address dropdown from the server (as a fallback)
+    function refreshAddressDropdown(selectedAddressId) {
+      console.log('refreshAddressDropdown called with selectedAddressId:', selectedAddressId);
+      const formData = new FormData();
+      formData.append('fetch_addresses', 'true');
+
+      fetch(checkoutUrl, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+      })
+      .then(response => {
+        console.log('refreshAddressDropdown response status:', response.status);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Address list fetched from server:', data.addresses);
+        if (data.success && data.addresses) {
+          // Clear existing options
+          addressSelect.innerHTML = '';
+          console.log('Cleared addressSelect options');
+
+          if (data.addresses.length === 0) {
+            const option = document.createElement('option');
+            option.value = '';
+            option.textContent = 'No addresses available';
+            addressSelect.appendChild(option);
+            console.log('No addresses available, added placeholder option');
+            updateAddressDisplayWithData(null); // Clear the display
+            return;
+          }
+
+          // Populate dropdown with fresh data
+          data.addresses.forEach(address => {
+            const option = document.createElement('option');
+            option.value = address.id;
+            option.textContent = `${address.name} - ${address.street_address}`;
+            option.dataset.name = address.name;
+            option.dataset.street = address.street_address;
+            option.dataset.city = address.city;
+            option.dataset.state = address.state;
+            option.dataset.postal = address.postal_code;
+            option.dataset.country = address.country;
+            option.dataset.phone = address.phone;
+            option.dataset.isDefault = address.is_default;
+            addressSelect.appendChild(option);
+          });
+          console.log('Populated addressSelect with new options:', addressSelect.options);
+
+          // Select the specified address
+          if (selectedAddressId) {
+            addressSelect.value = selectedAddressId;
+            console.log('Selected address in dropdown after refresh, value:', addressSelect.value);
+          }
+
+          // Update the display based on the dropdown selection
+          const selectedOption = addressSelect.options[addressSelect.selectedIndex];
+          if (selectedOption && selectedOption.value) {
+            const addressData = {
+              id: selectedOption.value,
+              name: selectedOption.dataset.name,
+              street_address: selectedOption.dataset.street,
+              city: selectedOption.dataset.city,
+              state: selectedOption.dataset.state,
+              postal_code: selectedOption.dataset.postal,
+              country: selectedOption.dataset.country,
+              phone: selectedOption.dataset.phone,
+              is_default: selectedOption.dataset.isDefault === 'true'
+            };
+            console.log('Calling updateAddressDisplayWithData from refreshAddressDropdown with:', addressData);
+            updateAddressDisplayWithData(addressData);
+          }
+        } else {
+          console.error('No addresses returned from server or request failed:', data);
+          if (newAddressMessage) {
+            newAddressMessage.innerHTML = `<div class="alert alert-error">Failed to refresh address list.</div>`;
+          } else {
+            console.warn('newAddressMessage element not found, cannot display error message');
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error refreshing address dropdown:', error);
+        if (newAddressMessage) {
+          newAddressMessage.innerHTML = `<div class="alert alert-error">An error occurred while refreshing addresses. Please try again.</div>`;
+        } else {
+          console.warn('newAddressMessage element not found, cannot display error message');
+        }
+      });
+    }
+
+    // Update display based on dropdown selection
+    function updateAddressDisplay() {
+      console.log('updateAddressDisplay called');
+      if (!addressSelect) {
+        console.error('addressSelect element not found');
+        return;
+      }
+
+      const selectedOption = addressSelect.options[addressSelect.selectedIndex];
+      if (!selectedOption || !selectedOption.value) {
+        console.warn('No selected option or no valid address in addressSelect');
+        updateAddressDisplayWithData(null);
+        return;
+      }
+
+      const addressData = {
+        id: selectedOption.value,
+        name: selectedOption.dataset.name,
+        street_address: selectedOption.dataset.street,
+        city: selectedOption.dataset.city,
+        state: selectedOption.dataset.state,
+        postal_code: selectedOption.dataset.postal,
+        country: selectedOption.dataset.country,
+        phone: selectedOption.dataset.phone,
+        is_default: selectedOption.dataset.isDefault === 'true'
+      };
+
+      console.log('Updating address display from dropdown with data:', addressData);
+      updateAddressDisplayWithData(addressData);
+    }
+
+    // Initialize address display on page load
+    if (addressSelect) {
+      addressSelect.addEventListener('change', () => {
+        console.log('Address select changed, calling updateAddressDisplay');
+        updateAddressDisplay();
+      });
+
+      // Initial update of address display on page load
+      console.log('Initial page load, calling updateAddressDisplay');
+      updateAddressDisplay();
+    } else {
+      console.error('addressSelect element not found on page load');
+    }
+
+    // Toggle New Address Form
+    const toggleNewAddressBtn = document.getElementById('toggle-new-address');
+    if (toggleNewAddressBtn) {
+      toggleNewAddressBtn.addEventListener('click', function() {
+        const form = document.getElementById('new-address-form');
+        if (form.style.display === 'none' || form.style.display === '') {
+          form.style.display = 'block';
+          if (newAddressMessage) {
+            newAddressMessage.innerHTML = ''; // Clear any previous messages
+          }
+        } else {
+          form.style.display = 'none';
+          if (newAddressMessage) {
+            newAddressMessage.innerHTML = '';
+          }
+        }
+      });
+    }
+
+    // Handle New Address Form Submission via AJAX
+    const saveNewAddressBtn = document.getElementById('save-new-address');
+    if (saveNewAddressBtn) {
+      saveNewAddressBtn.addEventListener('click', function() {
+        const formData = new FormData();
+        formData.append('add_new_address', 'true');
+        formData.append('name', document.getElementById('name').value);
+        formData.append('street_address', document.getElementById('street_address').value);
+        formData.append('city', document.getElementById('city').value);
+        formData.append('state', document.getElementById('state').value);
+        formData.append('country', document.getElementById('country').value);
+        formData.append('postal_code', document.getElementById('postal_code').value);
+        formData.append('phone', document.getElementById('phone').value);
+
+        console.log('Submitting new address:', Object.fromEntries(formData));
+
+        fetch(checkoutUrl, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          }
+        })
+        .then(response => {
+          console.log('New address response status:', response.status);
+          console.log('New address response headers:', response.headers);
+          return response.text().then(text => {
+            console.log('New address raw response body:', text);
+            try {
+              const data = JSON.parse(text);
+              console.log('New address parsed response data:', data);
+              return { response, data };
+            } catch (error) {
+              throw new Error(`Failed to parse response as JSON: ${error.message}. Raw response: ${text}`);
+            }
+          });
+        })
+        .then(({ response, data }) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          if (data.success) {
+            // Display success message
+            if (newAddressMessage) {
+              newAddressMessage.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+            } else {
+              console.warn('newAddressMessage element not found, cannot display success message');
+            }
+            
+            // Update the dropdown with the new address
+            console.log('Calling updateAddressDropdown with new address:', data.address);
+            updateAddressDropdown(data.address);
+
+            // Update the UI directly with the new address data
+            console.log('Calling updateAddressDisplayWithData with new address:', data.address);
+            updateAddressDisplayWithData(data.address);
+
+            // Refresh the dropdown from the server as a fallback
+            console.log('Calling refreshAddressDropdown as a fallback');
+            refreshAddressDropdown(data.address.id);
+
+            // Clear the form and hide it
+            document.getElementById('name').value = '';
+            document.getElementById('street_address').value = '';
+            document.getElementById('city').value = '';
+            document.getElementById('state').value = '';
+            document.getElementById('country').value = '';
+            document.getElementById('postal_code').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('new-address-form').style.display = 'none';
+
+            // Clear the message after 3 seconds
+            if (newAddressMessage) {
+              setTimeout(() => {
+                newAddressMessage.innerHTML = '';
+              }, 3000);
+            }
+          } else {
+            // Display error message
+            if (newAddressMessage) {
+              newAddressMessage.innerHTML = `<div class="alert alert-error">${data.message}</div>`;
+            } else {
+              console.warn('newAddressMessage element not found, cannot display error message');
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Error adding new address:', error);
+          if (newAddressMessage) {
+            newAddressMessage.innerHTML = `<div class="alert alert-error">An error occurred while adding the address: ${error.message}. Please try again.</div>`;
+          } else {
+            console.warn('newAddressMessage element not found, cannot display error message');
+          }
+        });
+      });
+    }
+
+    // Toggle Edit Address Form and Populate Fields
+    function toggleEditAddressForm() {
+      console.log('toggleEditAddressForm called');
+      const form = document.getElementById('edit-address-form');
+      const addressId = this.dataset.addressId;
+      const selectedOption = Array.from(addressSelect.options).find(option => option.value === addressId);
+
+      if (form.style.display === 'none' || form.style.display === '') {
+        // Populate the form with the current address data
+        document.getElementById('edit_address_id').value = addressId;
+        document.getElementById('edit_name').value = selectedOption.dataset.name;
+        document.getElementById('edit_street_address').value = selectedOption.dataset.street;
+        document.getElementById('edit_city').value = selectedOption.dataset.city;
+        document.getElementById('edit_state').value = selectedOption.dataset.state;
+        document.getElementById('edit_country').value = selectedOption.dataset.country;
+        document.getElementById('edit_postal_code').value = selectedOption.dataset.postal;
+        document.getElementById('edit_phone').value = selectedOption.dataset.phone;
+
+        form.style.display = 'block';
+        if (editAddressMessage) {
+          editAddressMessage.innerHTML = ''; // Clear any previous messages
+        }
+      } else {
+        form.style.display = 'none';
+        if (editAddressMessage) {
+          editAddressMessage.innerHTML = '';
+        }
+      }
+    }
+
+    // Attach the edit button event listener on page load
+    const initialEditButton = document.getElementById('edit-address-btn');
+    if (initialEditButton) {
+      initialEditButton.addEventListener('click', toggleEditAddressForm);
+      console.log('Initial edit address button event listener attached');
+    }
+
+    // Handle Edit Address Form Submission via AJAX
+    const saveEditAddressBtn = document.getElementById('save-edit-address');
+    if (saveEditAddressBtn) {
+      saveEditAddressBtn.addEventListener('click', function() {
+        const formData = new FormData();
+        formData.append('edit_address', 'true');
+        formData.append('address_id', document.getElementById('edit_address_id').value);
+        formData.append('name', document.getElementById('edit_name').value);
+        formData.append('street_address', document.getElementById('edit_street_address').value);
+        formData.append('city', document.getElementById('edit_city').value);
+        formData.append('state', document.getElementById('edit_state').value);
+        formData.append('country', document.getElementById('edit_country').value);
+        formData.append('postal_code', document.getElementById('edit_postal_code').value);
+        formData.append('phone', document.getElementById('edit_phone').value);
+
+        console.log('Submitting edited address:', Object.fromEntries(formData));
+
+        fetch(checkoutUrl, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          }
+        })
+        .then(response => {
+          console.log('Edit address response status:', response.status);
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Edit address response data:', data);
+          if (data.success) {
+            // Display success message
+            if (editAddressMessage) {
+              editAddressMessage.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+            }
+            
+            // Update the UI directly with the edited address data
+            console.log('Calling updateAddressDisplayWithData with edited address:', data.address);
+            updateAddressDisplayWithData(data.address);
+
+            // Refresh the dropdown to ensure it has the latest addresses
+            console.log('Calling refreshAddressDropdown for edited address');
+            refreshAddressDropdown(data.address.id);
+
+            // Hide the form
+            document.getElementById('edit-address-form').style.display = 'none';
+
+            // Clear the message after 3 seconds
+            if (editAddressMessage) {
+              setTimeout(() => {
+                editAddressMessage.innerHTML = '';
+              }, 3000);
+            }
+          } else {
+            // Display error message
+            if (editAddressMessage) {
+              editAddressMessage.innerHTML = `<div class="alert alert-error">${data.message}</div>`;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Error editing address:', error);
+          if (editAddressMessage) {
+            editAddressMessage.innerHTML = `<div class="alert alert-error">An error occurred while editing the address. Please try again.</div>`;
+          }
+        });
+      });
+    }
+
+    const totalAmount = {{ final_total|floatformat:2|default:"0" }};
+    const walletBalance = {{ wallet_balance|floatformat:2|default:"0" }};
+    const allowCOD = {{ allow_cod|yesno:"true,false"|default:"false" }};
+    const walletMessage = document.getElementById('wallet-message');
+    const codMessage = document.getElementById('cod-message');
+    const placeOrderBtn = document.getElementById('placeOrderBtn');
+    const paymentMethods = document.querySelectorAll('input[name="payment_method"]');
+
+    paymentMethods.forEach(method => {
+      method.addEventListener('change', () => {
+        let disableButton = false;
+
+        if (method.value === 'Wallet') {
+          if (walletBalance < totalAmount) {
+            walletMessage.style.display = 'block';
+            codMessage.style.display = 'none';
+            disableButton = true;
+          } else {
+            walletMessage.style.display = 'none';
+            codMessage.style.display = 'none';
+          }
+        }
+        else if (method.value === 'Cash on Delivery') {
+          if (!allowCOD) {
+            codMessage.style.display = 'block';
+            walletMessage.style.display = 'none';
+            disableButton = true;
+          } else {
+            codMessage.style.display = 'none';
+            walletMessage.style.display = 'none';
+          }
+        }
+        else {
+          walletMessage.style.display = 'none';
+          codMessage.style.display = 'none';
+        }
+
+        placeOrderBtn.disabled = disableButton;
+      });
+    });
+
+    const defaultMethod = document.querySelector('input[name="payment_method"]:checked') || document.querySelector('input[name="payment_method"][value="Razorpay"]');
+    if (defaultMethod) {
+      defaultMethod.dispatchEvent(new Event('change'));
+    }
+
+    // Coupon Dropdown Script
+    const couponSelect = document.getElementById('coupon_select');
+    const couponCodeInput = document.getElementById('coupon-code-input');
+    const couponDetails = document.getElementById('coupon_details');
+    const copyCouponBtn = document.getElementById('copy_coupon_btn');
+    const couponForm = document.getElementById('coupon-form');
+
+    couponSelect.addEventListener('change', function () {
+      const selectedOption = this.options[this.selectedIndex];
+      if (!selectedOption.value) {
+        couponDetails.style.display = 'none';
+        return;
+      }
+
+      const code = selectedOption.dataset.code;
+      const discountType = selectedOption.dataset.discountType;
+      const discountAmount = selectedOption.dataset.discountAmount;
+      const maxDiscount = selectedOption.dataset.maxDiscount;
+      const minPurchase = selectedOption.dataset.minPurchase;
+      const validUntil = selectedOption.dataset.validUntil;
+      const status = selectedOption.dataset.status;
+
+      document.getElementById('coupon_code').textContent = code;
+      document.getElementById('coupon_discount').textContent = 
+        discountType === 'Fixed' 
+          ? `₹${discountAmount}` 
+          : `${discountAmount}% (Max ₹${maxDiscount})`;
+      document.getElementById('coupon_min_purchase').textContent = `₹${minPurchase}`;
+      document.getElementById('coupon_valid_until').textContent = validUntil;
+      document.getElementById('coupon_status').innerHTML = 
+        status === 'available' 
+          ? '<span class="badge-available">Available</span>' 
+          : '<span class="badge-used">Used</span>';
+
+      couponDetails.style.display = 'block';
+
+      if (status === 'available') {
+        copyCouponBtn.style.display = 'block';
+        copyCouponBtn.onclick = function () {
+          couponCodeInput.value = code;
+          couponForm.submit();
+        };
+      } else {
+        copyCouponBtn.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

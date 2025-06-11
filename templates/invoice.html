@@ -1,0 +1,100 @@
+{% load static %}
+{% load order_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - Order #{{ order.id }}</title>
+    <link rel="stylesheet" href="{% static 'assets/css/vendor/bootstrap.min.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Jost', sans-serif; color: #333; }
+        .invoice-container { max-width: 800px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .invoice-header { text-align: center; margin-bottom: 30px; }
+        .invoice-header img { max-width: 150px; }
+        .invoice-details, .customer-details, .shipping-details { margin-bottom: 20px; }
+        .table { margin-bottom: 20px; }
+        .table th, .table td { padding: 10px; vertical-align: middle; }
+        .table th { background-color: #f8f9fa; }
+        .total-section { text-align: right; margin-top: 20px; }
+        .footer { text-align: center; margin-top: 30px; font-size: 0.9em; color: #777; }
+        @media print {
+            .invoice-container { border: none; margin: 0; padding: 0; }
+            .footer { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <!-- Header -->
+        <div class="invoice-header">
+            <img src="{% static 'assets/img/logo/nav-logo.png' %}" alt="Suruchi Logo">
+            <h2>Invoice</h2>
+            <p>Order #{{ order.id }} | Date: {{ order.created_at|date:"F d, Y" }}</p>
+        </div>
+
+        <!-- Customer Details -->
+        <div class="customer-details">
+            <h4>Customer Details</h4>
+            <p><strong>Name:</strong> {{ order.user.get_full_name|default:order.user.username }}</p>
+            <p><strong>Email:</strong> {{ order.user.email }}</p>
+            <p><strong>Phone:</strong> {{ order.shipping_address.phone }}</p>
+        </div>
+
+        <!-- Shipping Details -->
+        <div class="shipping-details">
+            <h4>Shipping Address</h4>
+            <p>{{ order.shipping_address.name }}</p>
+            <p>{{ order.shipping_address.address }}</p>
+            <p>{{ order.shipping_address.city }}, {{ order.shipping_address.state }} {{ order.shipping_address.postcode }}</p>
+            <p>{{ order.shipping_address.country }}</p>
+        </div>
+
+        <!-- Order Items -->
+        <div class="order-items">
+            <h4>Order Items</h4>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Variant</th>
+                        <th>Size</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.product_variant.color|default:"N/A" }}</td>
+                        <td>{{ item.size.size|default:"N/A" }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>₹{{ item.price|floatformat:2 }}</td>
+                        <td>₹{{ item.price|floatformat:2|multiply:item.quantity|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Total Section -->
+        <div class="total-section">
+            <p><strong>Subtotal:</strong> ₹{{ order.total_price|subtract:order.discount_coupon_amount|floatformat:2 }}</p>
+            {% if order.discount_applied %}
+            <p><strong>Discount:</strong> ₹{{ order.discount_coupon_amount|floatformat:2 }}</p>
+            {% endif %}
+            <p><strong>Total:</strong> ₹{{ order.total_price|floatformat:2 }}</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Thank you for shopping with Suruchi!</p>
+            <p>Contact us at support@suruchi.com | www.suruchi.com</p>
+        </div>
+    </div>
+</body>
+</html>

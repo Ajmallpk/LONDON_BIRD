@@ -1,0 +1,422 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100%;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        .sidebar .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .sidebar .logo img {
+            width: 100px;
+            max-width: 100%;
+        }
+        .sidebar h3 {
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 15px 20px;
+            cursor: pointer;
+        }
+        .sidebar ul li:hover {
+            background-color: #34495e;
+        }
+        .sidebar ul li.active {
+            background-color: #e74c3c;
+        }
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header .user-profile img {
+            width: 30px;
+            border-radius: 50%;
+        }
+        .header .search-bar input {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 200px;
+        }
+        .category-section {
+            background-color: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .category-section h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            display: inline-block;
+        }
+        .search-form {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .account__login--input {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+        }
+        .account__login--input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+            outline: none;
+        }
+        .account__login--btn {
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            color: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .account__login--btn:hover {
+            background: linear-gradient(90deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+        }
+        .clear-btn {
+            background: #7f8c8d;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .clear-btn:hover {
+            background: #6c757d;
+            transform: translateY(-2px);
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            min-width: 700px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f5f7fa;
+            font-weight: 600;
+        }
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            color: white;
+            margin-right: 0.5rem;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        .view-btn {
+            background-color: #3498db;
+        }
+        .view-btn:hover {
+            background-color: #2980b9;
+        }
+        .update-status-form {
+            display: inline-block;
+        }
+        .update-status-select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            width: 100%;
+        }
+        .pagination {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        .pagination a {
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            text-decoration: none;
+            color: #e74c3c;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .pagination a:hover {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .error {
+            color: red;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .success {
+            color: green;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1100;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .hamburger {
+                display: block;
+            }
+            .header {
+                padding: 10px;
+            }
+            .header .search-bar input {
+                max-width: 150px;
+                font-size: 0.9rem;
+            }
+            .category-section {
+                padding: 15px;
+            }
+            .category-section h2 {
+                font-size: 1.25rem;
+            }
+            .account__login--input {
+                max-width: 100%;
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .account__login--btn, .clear-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            th, td {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .action-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            .update-status-select {
+                padding: 0.4rem;
+                font-size: 0.9rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .header .search-bar input {
+                max-width: 120px;
+            }
+            .action-btn {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
+            }
+            .pagination a, .pagination span {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hamburger" onclick="toggleSidebar()">☰</div>
+   <div class="sidebar" id="sidebar"
+     style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); width: 100%; max-width: 250px; height: 100vh; overflow-y: auto; position: fixed; top: 0; left: 0; z-index: 1000;">
+    
+    <div class="logo" style="text-align: center; margin-bottom: 20px;">
+        <h3 style="font-size: 1.5rem; color: #007bff; font-weight: bold;">LONDON BIRD</h3>
+    </div>
+
+    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+        <li style="{% if request.resolver_match.url_name == 'admin_dashboard' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'admin_dashboard' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'admin_dashboard' %}white{% else %}#333{% endif %}; text-decoration: none;">Dashboard</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'user_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'user_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'user_management' %}white{% else %}#333{% endif %}; text-decoration: none;">User Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'product_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'product_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'product_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Product Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'category_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'category_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'category_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Category Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'admin_orders_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'admin_orders_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'admin_orders_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Order Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'return_requests' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'return_requests' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'return_requests' %}white{% else %}#333{% endif %}; text-decoration: none;">Return Requests</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'inventory_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'inventory_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'inventory_management' %}white{% else %}#333{% endif %}; text-decoration: none;">Inventory Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'coupon_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'coupon_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'coupon_management' %}white{% else %}#333{% endif %}; text-decoration: none;">Coupon Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'sales_report' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'sales_report' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'sales_report' %}white{% else %}#333{% endif %}; text-decoration: none;">Sales Report</a>
+        </li>
+        <!-- <li>
+            <a href="{% url 'logout' %}" style="display: block; padding: 10px 15px; background-color: #dc3545; border-radius: 5px; color: white; text-decoration: none;">Logout</a>
+        </li> -->
+    </ul>
+</div>
+
+    <div class="content">
+       
+        <div class="category-section">
+            <h2>Order Management</h2>
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="{% if message.tags == 'success' %}success{% else %}error{% endif %}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            <form method="get" action="" class="search-form">
+                <input class="account__login--input" type="text" name="search" value="{{ search_query }}" placeholder="Search by Order ID, User Name, or Email">
+                <select name="status" class="account__login--input">
+                    <option value="">All Statuses</option>
+                    {% for status_value, status_label in status_choices %}
+                        <option value="{{ status_value }}" {% if status == status_value %}selected{% endif %}>{{ status_label }}</option>
+                    {% endfor %}
+                </select>
+                <select name="sort" class="account__login--input">
+                    <option value="-created_at" {% if sort == '-created_at' %}selected{% endif %}>Newest First</option>
+                    <option value="created_at" {% if sort == 'created_at' %}selected{% endif %}>Oldest First</option>
+                    <option value="total_price" {% if sort == 'total_price' %}selected{% endif %}>Price: Low to High</option>
+                    <option value="-total_price" {% if sort == '-total_price' %}selected{% endif %}>Price: High to Low</option>
+                </select>
+                <button class="account__login--btn" type="submit">Search</button>
+                <a href="{% url 'admin_orders_list' %}" class="clear-btn">Clear</a>
+            </form>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in page_obj %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                            <td>{{ order.user.username }}</td>
+                            <td>{{ order.user.email }}</td>
+                            <td>₹{{ order.total_price|floatformat:2 }}</td>
+                            <td>{{ order.status }}</td>
+                            <td>
+                                <a href="{% url 'admin_order_detail' order.id %}" class="action-btn view-btn">View</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7">No orders found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">Previous</a>
+                {% endif %}
+                <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">Next</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

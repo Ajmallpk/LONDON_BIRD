@@ -1,0 +1,421 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coupon Management - Suruchi Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100%;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        .sidebar .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .sidebar h3 {
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 15px 20px;
+            cursor: pointer;
+        }
+        .sidebar ul li:hover {
+            background-color: #34495e;
+        }
+        .sidebar ul li.active {
+            background-color: #e74c3c;
+        }
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header .user-profile img {
+            width: 30px;
+            border-radius: 50%;
+        }
+        .header .search-bar input {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 200px;
+        }
+        .coupon-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .coupon-section h2 {
+            margin: 0 0 20px;
+            font-size: 1.5rem;
+        }
+        .filter-form {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .filter-form label {
+            font-weight: 500;
+            color: #7f8c8d;
+        }
+        .filter-form select {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Poppins', sans-serif;
+            width: 100%;
+            max-width: 150px;
+        }
+        .filter-form button {
+            padding: 5px 15px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+        .filter-form button:hover {
+            background-color: #c0392b;
+        }
+        .add-coupon-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #27ae60;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .add-coupon-btn:hover {
+            background-color: #219653;
+            color: white;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        .coupon-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        .coupon-table th, .coupon-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .coupon-table th {
+            background-color: #f5f7fa;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        .coupon-table td {
+            color: #333;
+        }
+        .badge-valid {
+            background-color: #27ae60;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        .badge-invalid {
+            background-color: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        .action-btn {
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-right: 5px;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        .edit-btn {
+            background-color: #f1c40f;
+            color: white;
+        }
+        .edit-btn:hover {
+            background-color: #d4ac0d;
+            color: white;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        .error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .success {
+            color: #27ae60;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1100;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .hamburger {
+                display: block;
+            }
+            .header {
+                padding: 10px;
+            }
+            .header .search-bar input {
+                max-width: 150px;
+                font-size: 0.9rem;
+            }
+            .coupon-section {
+                padding: 15px;
+            }
+            .coupon-section h2 {
+                font-size: 1.25rem;
+            }
+            .filter-form select {
+                max-width: 120px;
+                font-size: 0.9rem;
+            }
+            .filter-form button {
+                padding: 5px 10px;
+                font-size: 0.9rem;
+            }
+            .add-coupon-btn {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+            .coupon-table th, .coupon-table td {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+            .action-btn {
+                padding: 4px 8px;
+                font-size: 0.8rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .header .search-bar input {
+                max-width: 120px;
+            }
+            .filter-form select {
+                max-width: 100px;
+            }
+            .action-btn {
+                padding: 3px 6px;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hamburger" onclick="toggleSidebar()">☰</div>
+    <div class="sidebar" id="sidebar"
+     style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); width: 100%; max-width: 250px; height: 100vh; overflow-y: auto; position: fixed; top: 0; left: 0; z-index: 1000;">
+    
+    <div class="logo" style="text-align: center; margin-bottom: 20px;">
+        <h3 style="font-size: 1.5rem; color: #007bff; font-weight: bold;">LONDON BIRD</h3>
+    </div>
+
+    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+        <li style="{% if request.resolver_match.url_name == 'admin_dashboard' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'admin_dashboard' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'admin_dashboard' %}white{% else %}#333{% endif %}; text-decoration: none;">Dashboard</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'user_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'user_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'user_management' %}white{% else %}#333{% endif %}; text-decoration: none;">User Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'product_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'product_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'product_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Product Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'category_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'category_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'category_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Category Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'admin_orders_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'admin_orders_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'admin_orders_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Order Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'return_requests' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'return_requests' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'return_requests' %}white{% else %}#333{% endif %}; text-decoration: none;">Return Requests</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'inventory_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'inventory_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'inventory_management' %}white{% else %}#333{% endif %}; text-decoration: none;">Inventory Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'coupon_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'coupon_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'coupon_management' %}white{% else %}#333{% endif %}; text-decoration: none;">Coupon Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'sales_report' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'sales_report' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'sales_report' %}white{% else %}#333{% endif %}; text-decoration: none;">Sales Report</a>
+        </li>
+        <!-- <li>
+            <a href="{% url 'logout' %}" style="display: block; padding: 10px 15px; background-color: #dc3545; border-radius: 5px; color: white; text-decoration: none;">Logout</a>
+        </li> -->
+    </ul>
+</div>
+
+    <div class="content">
+       
+        <div class="coupon-section">
+            <h2>Coupon Management</h2>
+            <form method="GET" class="filter-form">
+                <div>
+                    <label for="status">Status</label>
+                    <select id="status" name="status">
+                        <option value="">All</option>
+                        <option value="active" {% if status == 'active' %}selected{% endif %}>Active</option>
+                        <option value="inactive" {% if status == 'inactive' %}selected{% endif %}>Inactive</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="validity">Validity</label>
+                    <select id="validity" name="validity">
+                        <option value="">All</option>
+                        <option value="valid" {% if validity == 'valid' %}selected{% endif %}>Valid</option>
+                        <option value="invalid" {% if validity == 'invalid' %}selected{% endif %}>Invalid</option>
+                    </select>
+                </div>
+                <button type="submit">Filter</button>
+            </form>
+            <a href="{% url 'add_coupon' %}" class="add-coupon-btn">Add New Coupon</a>
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="{% if message.tags == 'success' %}success{% else %}error{% endif %}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            <div class="table-container">
+                <table class="coupon-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Discount</th>
+                            <th>Min Purchase</th>
+                            <th>Valid From</th>
+                            <th>Valid Until</th>
+                            <th>Usage Count</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for coupon in coupons %}
+                        <tr>
+                            <td>{{ coupon.code }}</td>
+                            <td>
+                                {% if coupon.discount_type == 'Fixed' %}
+                                    ₹{{ coupon.discount_amount|floatformat:2 }}
+                                {% else %}
+                                    {{ coupon.discount_amount|floatformat:0 }}% (Max ₹{{ coupon.max_discount|floatformat:2 }})
+                                {% endif %}
+                            </td>
+                            <td>₹{{ coupon.min_purchase|floatformat:2 }}</td>
+                            <td>{{ coupon.valid_from|date:"Y-m-d H:i" }}</td>
+                            <td>{{ coupon.valid_until|date:"Y-m-d H:i" }}</td>
+                            <td>{{ coupon.get_usage_count }}</td>
+                            <td>
+                                <span class="{% if coupon.is_valid %}badge-valid{% else %}badge-invalid{% endif %}">
+                                    {% if coupon.is_active %}active{% else %}inactive{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'edit_coupon' coupon.id %}" class="action-btn edit-btn">Edit</a>
+                                <form action="{% url 'delete_coupon' coupon.id %}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete coupon {{ coupon.code }}?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="action-btn delete-btn">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" style="text-align: center;">No coupons found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

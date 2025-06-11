@@ -1,0 +1,322 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Stock Size</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #f5f7fa; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            min-height: 100vh; 
+            flex-direction: column;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100%;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar .logo img {
+            width: 100px;
+            max-width: 100%;
+        }
+
+        .sidebar h3 {
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 15px 20px;
+            cursor: pointer;
+        }
+
+        .sidebar ul li:hover {
+            background-color: #34495e;
+        }
+
+        .sidebar ul li.active {
+            background-color: #e74c3c;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+
+        .form-container { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            width: 90%;
+            max-width: 500px; 
+            margin: 0 auto; 
+        }
+
+        .form-container h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group { 
+            margin-bottom: 1rem; 
+        }
+
+        label { 
+            display: block; 
+            margin-bottom: 0.5rem; 
+            font-weight: 500; 
+        }
+
+        input, select { 
+            width: 100%; 
+            padding: 0.75rem; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+        }
+
+        .submit-btn { 
+            background: linear-gradient(90deg, #e74c3c, #c0392b); 
+            border: none; 
+            padding: 0.75rem 1.5rem; 
+            color: white; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .submit-btn:hover { 
+            background: linear-gradient(90deg, #c0392b, #a93226); 
+        }
+
+        .error { 
+            color: red; 
+            font-size: 0.9rem; 
+            margin-top: 0.25rem; 
+        }
+
+        .success { 
+            color: green; 
+            font-size: 0.9rem; 
+            margin-bottom: 1rem; 
+        }
+
+        .errorlist { 
+            color: red; 
+            font-size: 0.9rem; 
+            margin-bottom: 1rem; 
+            list-style: none; 
+            padding: 0; 
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1100;
+        }
+
+        /* Responsive Media Queries */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+                padding: 15px;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .form-container {
+                padding: 15px;
+            }
+
+            .form-container h2 {
+                font-size: 1.25rem;
+            }
+
+            label {
+                font-size: 0.9rem;
+            }
+
+            input, select {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .error, .success, .errorlist {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 10px;
+            }
+
+            .form-container {
+                padding: 10px;
+            }
+
+            .form-container h2 {
+                font-size: 1.1rem;
+            }
+
+            label {
+                font-size: 0.85rem;
+            }
+
+            input, select {
+                padding: 0.4rem;
+                font-size: 0.85rem;
+            }
+
+            .submit-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .error, .success, .errorlist {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hamburger" onclick="toggleSidebar()">☰</div>
+    <div class="sidebar" id="sidebar"
+     style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); width: 100%; max-width: 250px; height: 100vh; overflow-y: auto; position: fixed; top: 0; left: 0; z-index: 1000;">
+    
+    <div class="logo" style="text-align: center; margin-bottom: 20px;">
+        <h3 style="font-size: 1.5rem; color: #007bff; font-weight: bold;">LONDON BIRD</h3>
+    </div>
+
+    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+        <li style="{% if request.resolver_match.url_name == 'admin_dashboard' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'admin_dashboard' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'admin_dashboard' %}white{% else %}#333{% endif %}; text-decoration: none;">Dashboard</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'user_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'user_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'user_management' %}white{% else %}#333{% endif %}; text-decoration: none;">User Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'product_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'product_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'product_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Product Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'category_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'category_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'category_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Category Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'admin_orders_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'admin_orders_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'admin_orders_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Order Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'return_requests' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'return_requests' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'return_requests' %}white{% else %}#333{% endif %}; text-decoration: none;">Return Requests</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'inventory_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'inventory_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'inventory_management' %}white{% else %}#333{% endif %}; text-decoration: none;">Inventory Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'coupon_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'coupon_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'coupon_management' %}white{% else %}#333{% endif %}; text-decoration: none;">Coupon Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'sales_report' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'sales_report' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'sales_report' %}white{% else %}#333{% endif %}; text-decoration: none;">Sales Report</a>
+        </li>
+    </ul>
+</div>
+
+    <div class="content">
+        <div class="form-container">
+            <h2>Add Size for Variant {{ variant.name }}</h2>
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="{% if message.tags == 'success' %}success{% else %}error{% endif %}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            {% if form.non_field_errors %}
+                <ul class="errorlist">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.size.id_for_label }}">Size:</label>
+                    {{ form.size }}
+                    {% if form.size.errors %}
+                        <div class="error">{{ form.size.errors.as_text }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.stock.id_for_label }}">Stock:</label>
+                    {{ form.stock }}
+                    {% if form.stock.errors %}
+                        <div class="error">{{ form.stock.errors.as_text }}</div>
+                    {% endif %}
+                </div>
+                <button type="submit" class="submit-btn">Add Size</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

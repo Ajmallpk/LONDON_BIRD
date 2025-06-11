@@ -1,0 +1,325 @@
+{% load static %}
+{% load socialaccount %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Suruchi - Account Page</title>
+  <meta name="description" content="Morden Bootstrap HTML5 Template">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">
+    
+  <!-- ======= All CSS Plugins here ======== -->
+  <link rel="stylesheet" href="{% static 'assets/css/plugins/swiper-bundle.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/plugins/glightbox.min.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Plugin css -->
+  <link rel="stylesheet" href="{% static 'assets/css/vendor/bootstrap.min.css' %}">
+
+  <!-- Custom Style CSS -->
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+  <!-- Custom CSS -->
+  <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .login__section {
+            padding: 4rem 0;
+        }
+        .login__section--inner {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .login__section--inner .row {
+            display: flex;
+            align-items: stretch;
+        }
+        .login__section--inner .col {
+            display: flex;
+            flex-direction: column;
+        }
+        .account__login {
+            padding: 2.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .account__login--header__title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .account__login--header__desc {
+            font-size: 1.5rem;
+            color: #666;
+        }
+        .account__login--input {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        .account__login--input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+            outline: none;
+        }
+        .account__login--btn {
+            background: linear-gradient(90deg, #EB3349, #bf4553);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-weight: 500;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .account__login--btn:hover {
+            background: linear-gradient(90deg, #c6283c, #a23c47);
+            transform: translateY(-2px);
+        }
+        .account__login--remember__forgot {
+            margin: 1rem 0;
+        }
+        .checkout__checkbox--input {
+            margin-right: 0.5rem;
+        }
+        .account__login--forgot {
+            background: none;
+            border: none;
+            color: #007bff;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            text-decoration: none;
+        }
+        .account__login--forgot:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+        .account__login--divide {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        .account__login--divide__text {
+            color: #666;
+            background: white;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        .account__login--divide::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #ddd;
+            z-index: 0;
+        }
+        .account__social {
+            gap: 1rem;
+        }
+        .account__social--link {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .account__social--link.google {
+            background: #db4437;
+            color: white;
+        }
+        .account__social--link:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+        .account__login--signup__text {
+            text-align: center;
+            color: #666;
+        }
+        .account__login--signup__text a {
+            color: #007bff;
+            font-weight: 500;
+        }
+        .banner__items {
+            padding: 2.5rem;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .banner__items__login {
+            display: block;
+            text-align: center;
+        }
+        .banner__items--login__img {
+            max-width: 100%;
+            max-height: 500px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .banner__items--login__img:hover {
+            transform: scale(1.02);
+            filter: brightness(1.05);
+        }
+        .banner__items--content__title {
+            color: #333;
+            font-weight: 700;
+            margin-top: 1rem;
+            font-size: 80px;
+        }
+        .error {
+            color: red;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 767px) {
+            .login__section--inner {
+                margin: 1rem;
+            }
+            .login__section--inner .row {
+                display: block;
+            }
+            .account__login {
+                padding: 1.5rem;
+                height: auto;
+            }
+            .banner__items {
+                padding: 1.5rem;
+                height: auto;
+            }
+            .banner__items--login__img {
+                max-width: 80%;
+                max-height: 400px;
+            }
+        }
+  </style>
+</head>
+<body>
+    <!-- Start preloader -->
+    <div id="preloader">
+        <div id="ctn-preloader" class="ctn-preloader">
+            <div class="animation-preloader">
+                <div class="spinner"></div>
+                <div class="txt-loading">
+                    <span data-text-preloader="L" class="letters-loading">L</span>
+                    <span data-text-preloader="O" class="letters-loading">O</span>
+                    <span data-text-preloader="A" class="letters-loading">A</span>
+                    <span data-text-preloader="D" class="letters-loading">D</span>
+                    <span data-text-preloader="I" class="letters-loading">I</span>
+                    <span data-text-preloader="N" class="letters-loading">N</span>
+                    <span data-text-preloader="G" class="letters-loading">G</span>
+                </div>
+            </div>	
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
+        </div>
+    </div>
+    <!-- End preloader -->
+
+    <main class="main__content_wrapper">
+        <!-- Start login section -->
+        <div class="login__section section--padding">
+            <div class="container">
+                <div class="login__section--inner">
+                    <div class="row row-cols-md-2 row-cols-1">
+                        <div class="col">
+                            <div class="account__login">
+                                <div class="account__login--header mb-25">
+                                    <h2 class="account__login--header__title h3 mb-10">Login</h2>
+                                    <p class="account__login--header__desc">Login if you are a returning customer.</p>
+                                </div>
+                                <form method="post" action="{% url 'login' %}">
+                                    {% csrf_token %}
+                                    <div class="account__login--inner">
+                                        {% if messages %}
+                                            <div class="messages">  <!-- Changed: Added container div for styling -->
+                                                {% for message in messages %}
+                                                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">  <!-- Changed: Replaced <p class="error"> with Bootstrap alert -->
+                                                        {{ message }}
+                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>  <!-- Changed: Added close button -->
+                                                    </div>
+                                                {% endfor %}
+                                            </div>  <!-- Changed: End of new container -->
+                                        {% endif %}
+                                        <input class="account__login--input" placeholder="Email Address" type="email" name="email" value="{{ form_data.email }}" required>
+                                        <input class="account__login--input" placeholder="Password" type="password" name="password" required>
+                                        <div class="account__login--remember__forgot mb-15 d-flex justify-content-between align-items-center">
+                                            <div class="account__login--remember position__relative">
+                                                <input class="checkout__checkbox--input" id="check1" type="checkbox" name="remember">
+                                                <span class="checkout__checkbox--checkmark"></span>
+                                                <label class="checkout__checkbox--label login__remember--label" for="check1">Remember me</label>
+                                            </div>
+                                            <a class="account__login--forgot" href="{% url 'forgot_password' %}">Forgot Your Password?</a>
+                                        </div>
+                                        <button class="account__login--btn primary__btn" type="submit">Login</button>
+                                        <div class="account__login--divide">
+                                            <span class="account__login--divide__text">OR</span>
+                                        </div>
+                                        <div class="account__social d-flex justify-content-center mb-15">
+                                            <a class="account__social--link google" href="{% provider_login_url 'google' %}">Google</a>
+                                        </div>
+                                        <p class="account__login--signup__text">Don't have an account? <a href="{% url 'register' %}">Sign up now</a></p>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="banner__items">
+                                <a class="banner__items__login position__relative">
+                                    <img class="banner__items--login__img" src="{% static 'assets/img/Logo/download (16).jpeg' %}" alt="banner-img">
+                                    <div class="banner__items--content">
+                                        <h1 class="banner__items--content__title" style="color: #f5f7fa;">lb</h1>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>     
+        </div> 
+        <!-- End login section -->
+    </main>
+
+    <!-- Scroll top bar -->
+    <button id="scroll__top">
+        <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/>
+        </svg>
+    </button>
+
+    <!-- All Script JS Plugins here -->
+    <script src="{% static 'assets/js/vendor/popper.js' %}" defer="defer"></script>
+    <script src="{% static 'assets/js/vendor/bootstrap.min.js' %}" defer="defer"></script>
+    <script src="{% static 'assets/js/plugins/swiper-bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/glightbox.min.js' %}"></script>
+
+    <!-- Customscript js -->
+    <script src="{% static 'assets/js/script.js' %}"></script>
+</body>
+</html>

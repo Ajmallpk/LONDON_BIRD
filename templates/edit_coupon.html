@@ -1,0 +1,350 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Coupon - Suruchi Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100%;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        .sidebar .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .sidebar h3 {
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 15px 20px;
+            cursor: pointer;
+        }
+        .sidebar ul li:hover {
+            background-color: #34495e;
+        }
+        .sidebar ul li.active {
+            background-color: #e74c3c;
+        }
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header .user-profile img {
+            width: 30px;
+            border-radius: 50%;
+        }
+        .header .search-bar input {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 200px;
+        }
+        .coupon-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .coupon-section h2 {
+            margin: 0 0 20px;
+            font-size: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            max-width: 400px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Poppins', sans-serif;
+        }
+        .form-group small {
+            display: block;
+            color: #7f8c8d;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        .form-group .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .form-actions button,
+        .form-actions a {
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+        }
+        .form-actions button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .form-actions button:hover {
+            background-color: #219653;
+        }
+        .form-actions a {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .form-actions a:hover {
+            background-color: #c0392b;
+        }
+        .error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .success {
+            color: #27ae60;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1100;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .hamburger {
+                display: block;
+            }
+            .header {
+                padding: 10px;
+            }
+            .header .search-bar input {
+                max-width: 150px;
+                font-size: 0.9rem;
+            }
+            .coupon-section {
+                padding: 15px;
+            }
+            .coupon-section h2 {
+                font-size: 1.25rem;
+            }
+            .form-group input,
+            .form-group select {
+                max-width: 100%;
+                padding: 6px;
+                font-size: 0.9rem;
+            }
+            .form-group small {
+                font-size: 0.7rem;
+            }
+            .form-actions button,
+            .form-actions a {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .header .search-bar input {
+                max-width: 120px;
+            }
+            .form-group input,
+            .form-group select {
+                padding: 5px;
+                font-size: 0.8rem;
+            }
+            .form-actions button,
+            .form-actions a {
+                padding: 5px 10px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hamburger" onclick="toggleSidebar()">☰</div>
+    <div class="sidebar" id="sidebar"
+     style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); width: 100%; max-width: 250px; height: 100vh; overflow-y: auto; position: fixed; top: 0; left: 0; z-index: 1000;">
+    
+    <div class="logo" style="text-align: center; margin-bottom: 20px;">
+        <h3 style="font-size: 1.5rem; color: #007bff; font-weight: bold;">LONDON BIRD</h3>
+    </div>
+
+    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+        <li style="{% if request.resolver_match.url_name == 'admin_dashboard' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'admin_dashboard' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'admin_dashboard' %}white{% else %}#333{% endif %}; text-decoration: none;">Dashboard</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'user_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'user_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'user_management' %}white{% else %}#333{% endif %}; text-decoration: none;">User Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'product_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'product_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'product_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Product Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'category_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'category_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'category_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Category Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'admin_orders_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'admin_orders_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'admin_orders_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Order Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'return_requests' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'return_requests' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'return_requests' %}white{% else %}#333{% endif %}; text-decoration: none;">Return Requests</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'inventory_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'inventory_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'inventory_management' %}white{% else %}#333{% endif %}; text-decoration: none;">Inventory Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'coupon_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'coupon_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'coupon_management' %}white{% else %}#333{% endif %}; text-decoration: none;">Coupon Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'sales_report' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'sales_report' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'sales_report' %}white{% else %}#333{% endif %}; text-decoration: none;">Sales Report</a>
+        </li>
+        <!-- <li>
+            <a href="{% url 'logout' %}" style="display: block; padding: 10px 15px; background-color: #dc3545; border-radius: 5px; color: white; text-decoration: none;">Logout</a>
+        </li> -->
+    </ul>
+</div>
+
+    <div class="content">
+        
+        <div class="coupon-section">
+            <h2>Edit Coupon: {{ coupon.code }}</h2>
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="{% if message.tags == 'success' %}success{% else %}error{% endif %}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="code">Coupon Code</label>
+                    <input type="text" id="code" name="code" value="{{ coupon.code }}" required>
+                    <small>Must be unique (e.g., SAVE50).</small>
+                </div>
+                <div class="form-group">
+                    <label for="discount_type">Discount Type</label>
+                    <select id="discount_type" name="discount_type" required>
+                        <option value="Fixed" {% if coupon.discount_type == 'Fixed' %}selected{% endif %}>Fixed Amount</option>
+                        <option value="Percentage" {% if coupon.discount_type == 'Percentage' %}selected{% endif %}>Percentage</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="discount_amount">Discount Amount</label>
+                    <input type="number" step="0.01" id="discount_amount" name="discount_amount" value="{{ coupon.discount_amount }}" required>
+                    <small>For fixed: amount in ₹ (e.g., 50.00). For percentage: percentage value (e.g., 10).</small>
+                </div>
+                <div class="form-group">
+                    <label for="max_discount">Maximum Discount (for Percentage)</label>
+                    <input type="number" step="0.01" id="max_discount" name="max_discount" value="{{ coupon.max_discount|default_if_none:'' }}">
+                    <small>Maximum discount amount in ₹ for percentage discounts (e.g., 200.00).</small>
+                </div>
+                <div class="form-group">
+                    <label for="min_purchase">Minimum Purchase Amount</label>
+                    <input type="number" step="0.01" id="min_purchase" name="min_purchase" value="{{ coupon.min_purchase }}">
+                    <small>Minimum purchase amount to apply the coupon (e.g., 500.00).</small>
+                </div>
+                <div class="form-group">
+                    <label for="valid_from">Valid From</label>
+                    <input type="datetime-local" id="valid_from" name="valid_from" value="{{ coupon.valid_from|date:'Y-m-d\\TH:i' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="valid_until">Valid Until</label>
+                    <input type="datetime-local" id="valid_until" name="valid_until" value="{{ coupon.valid_until|date:'Y-m-d\\TH:i' }}" required>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox-group" style="padding-left: 15px;">
+                        <input type="checkbox" id="is_active" name="is_active" {% if coupon.is_active %}checked{% endif %}>
+                        <label for="is_active">Is Active</label>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit">Update Coupon</button>
+                    <a href="{% url 'coupon_management' %}">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

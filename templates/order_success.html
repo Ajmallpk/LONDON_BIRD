@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Successful - #{{ order.id }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    .success-container {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 450px;
+      width: 90%;
+      animation: fadeIn 0.6s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .success-animation {
+      width: 100px;
+      height: 100px;
+      margin: 1rem auto;
+      border-radius: 50%;
+      background: #38a169;
+      position: relative;
+      animation: popIn 0.5s ease-out;
+    }
+    .success-animation::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 45px;
+      border-right: 5px solid #fff;
+      border-bottom: 5px solid #fff;
+      transform: rotate(45deg);
+      left: 35%;
+      top: 25%;
+      animation: checkmark 0.5s ease 0.4s forwards;
+      opacity: 0;
+    }
+    @keyframes checkmark {
+      to {
+        opacity: 1;
+        transform: rotate(45deg) scale(1.2);
+      }
+    }
+    @keyframes popIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .success-container h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: #1a202c;
+      margin-bottom: 0.5rem;
+    }
+    .success-container p {
+      font-size: 0.9rem;
+      color: #718096;
+      margin-bottom: 0.5rem;
+    }
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      color: white;
+      display: inline-block;
+      margin: 0.5rem;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+    .details-btn {
+      background: linear-gradient(90deg, #4299e1, #3182ce);
+    }
+    .details-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+    }
+    .shop-btn {
+      background: linear-gradient(90deg, #ff4d4f, #f56565);
+    }
+    .shop-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(245, 101, 101, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="success-container">
+    <div class="success-animation"></div>
+    <h2>Thank You!</h2>
+    <p>Your order #{{ order.id }} has been successfully placed.</p>
+    <p>Payment Method: {{ order.payment_method }}</p>
+    <p>Placed on: {{ order.created_at|date:"F j, Y, g:i a" }}</p>
+
+<!-- <img src="https://cdn.dribbble.com/users/730703/screenshots/4563986/media/e2e4ecb63f1ed76900944c32e1039b21.gif" alt="Success Animation" class="success-illustration" /> -->
+
+    <p>We will notify you once your order is shipped.</p>
+    <p>If you have questions, please contact <a href="mailto:support@example.com">support@example.com</a>.</p>
+
+    <div>
+      <a href="{% url 'order_list' %}" class="btn details-btn">View Orders</a>
+      <a href="{% url 'shop' %}" class="btn shop-btn">Continue Shopping</a>
+    </div>
+  </div>
+</body>
+</html>

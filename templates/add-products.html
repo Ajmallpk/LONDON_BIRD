@@ -1,0 +1,437 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #f5f7fa; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            min-height: 100vh; 
+            flex-direction: column;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100%;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        .sidebar .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .sidebar .logo img {
+            width: 100px;
+            max-width: 100%;
+        }
+        .sidebar h3 {
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 15px 20px;
+            cursor: pointer;
+        }
+        .sidebar ul li:hover {
+            background-color: #34495e;
+        }
+        .sidebar ul li.active {
+            background-color: #e74c3c;
+        }
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+        .form-container { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            width: 90%;
+            max-width: 500px; 
+            margin: 0 auto; 
+        }
+        .form-container h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .form-group { 
+            margin-bottom: 1rem; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 0.5rem; 
+            font-weight: 500; 
+        }
+        input, textarea, select { 
+            width: 100%; 
+            padding: 0.75rem; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+        }
+        textarea { 
+            resize: vertical; 
+            min-height: 100px; 
+        }
+        input[type="checkbox"] { 
+            width: auto; 
+            margin-right: 0.5rem; 
+        }
+        .submit-btn { 
+            background: linear-gradient(90deg, #e74c3c, #c0392b); 
+            border: none; 
+            padding: 0.75rem 1.5rem; 
+            color: white; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            width: 100%;
+            max-width: 200px;
+        }
+        .submit-btn:hover { 
+            background: linear-gradient(90deg, #c0392b, #a93226); 
+        }
+        .error { 
+            color: red; 
+            font-size: 0.9rem; 
+            margin-top: 0.25rem; 
+        }
+        .success { 
+            color: green; 
+            font-size: 0.9rem; 
+            margin-bottom: 1rem; 
+        }
+        .errorlist { 
+            color: red; 
+            font-size: 0.9rem; 
+            margin-bottom: 1rem; 
+            list-style: none; 
+            padding: 0; 
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+            position: relative;
+        }
+        .modal-header h3 {
+            margin: 0 0 10px;
+            font-size: 1.2rem;
+        }
+        .close {
+            position: absolute;
+            top: 10px; 
+            right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-primary { 
+            background: #3498db; 
+            color: #fff; 
+        }
+        .btn-secondary { 
+            background: #bdc3c7; 
+            color: #333; 
+        }
+        .btn-primary:hover { 
+            background: #2980b9; 
+        }
+        .btn-secondary:hover { 
+            background: #95a5a6; 
+        }
+        .cropper-container {
+            max-height: 400px;
+            overflow: auto;
+            margin: 10px 0;
+        }
+        #cropper-image {
+            width: 100%;
+            height: auto;
+        }
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1100;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .hamburger {
+                display: block;
+            }
+            .form-container {
+                padding: 15px;
+            }
+            .form-container h2 {
+                font-size: 1.25rem;
+            }
+            label {
+                font-size: 0.9rem;
+            }
+            input, textarea, select {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+            }
+            .modal-header h3 {
+                font-size: 1rem;
+            }
+            .cropper-container {
+                max-height: 300px;
+            }
+        }
+        @media (max-width: 480px) {
+            .submit-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            .btn {
+                padding: 6px 10px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hamburger" onclick="toggleSidebar()">☰</div>
+    <div class="sidebar" id="sidebar"
+     style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); width: 100%; max-width: 250px; height: 100vh; overflow-y: auto; position: fixed; top: 0; left: 0; z-index: 1000;">
+    
+    <div class="logo" style="text-align: center; margin-bottom: 20px;">
+        <h3 style="font-size: 1.5rem; color: #007bff; font-weight: bold;">LONDON BIRD</h3>
+    </div>
+
+    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+        <li style="{% if request.resolver_match.url_name == 'admin_dashboard' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'admin_dashboard' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'admin_dashboard' %}white{% else %}#333{% endif %}; text-decoration: none;">Dashboard</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'user_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'user_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'user_management' %}white{% else %}#333{% endif %}; text-decoration: none;">User Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'product_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'product_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'product_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Product Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'category_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'category_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'category_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Category Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'admin_orders_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'admin_orders_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'admin_orders_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Order Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'return_requests' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'return_requests' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'return_requests' %}white{% else %}#333{% endif %}; text-decoration: none;">Return Requests</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'inventory_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'inventory_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'inventory_management' %}white{% else %}#333{% endif %}; text-decoration: none;">Inventory Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'coupon_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'coupon_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'coupon_management' %}white{% else %}#333{% endif %}; text-decoration: none;">Coupon Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'sales_report' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'sales_report' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'sales_report' %}white{% else %}#333{% endif %}; text-decoration: none;">Sales Report</a>
+        </li>
+        <!-- <li>
+            <a href="{% url 'logout' %}" style="display: block; padding: 10px 15px; background-color: #dc3545; border-radius: 5px; color: white; text-decoration: none;">Logout</a>
+        </li> -->
+    </ul>
+</div>
+
+    <div class="content">
+        <div class="form-container">
+            <h2>Add Product</h2>
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="{% if message.tags == 'success' %}success{% else %}error{% endif %}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            {% if form.non_field_errors %}
+                <ul class="errorlist">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% if field.name == 'image_1' %}
+                        <input type="file" name="{{ field.name }}" id="id_image" class="form-control image-input">
+                    {% elif field.field.widget.input_type == 'checkbox' %}
+                        <div style="display: flex; align-items: center;">
+                            {{ field }}
+                            <span>{{ field.label }}</span>
+                        </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="error">{{ field.errors.as_text }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="submit-btn">Add Product</button>
+            </form>
+        </div>
+    </div>
+    <div id="cropper-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Crop Image</h3>
+                <span class="close">×</span>
+            </div>
+            <div class="cropper-container">
+                <img id="cropper-image" src="" alt="Crop Preview">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-crop">Cancel</button>
+                <button class="btn btn-primary" id="crop-image">Crop & Use</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let cropper;
+            let currentImageInput;
+            const modal = document.getElementById('cropper-modal');
+            const image = document.getElementById('cropper-image');
+            const cropButton = document.getElementById('crop-image');
+            const cancelButton = document.getElementById('cancel-crop');
+            const closeModal = document.querySelector('.close');
+            const imageInput = document.querySelector('.image-input');
+
+            if (imageInput) {
+                imageInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        currentImageInput = this;
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            image.src = event.target.result;
+                            modal.style.display = 'flex';
+                            if (cropper) cropper.destroy();
+                            cropper = new Cropper(image, {
+                                aspectRatio: 1,
+                                viewMode: 1,
+                                autoCropArea: 0.8,
+                            });
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            cropButton.addEventListener('click', function() {
+                if (cropper && currentImageInput) {
+                    const canvas = cropper.getCroppedCanvas();
+                    canvas.toBlob(function(blob) {
+                        const newFile = new File([blob], "cropped_image.png", { type: "image/png" });
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(newFile);
+                        currentImageInput.files = dataTransfer.files;
+                        modal.style.display = "none";
+                        cropper.destroy();
+                    });
+                }
+            });
+
+            cancelButton.addEventListener('click', function() {
+                modal.style.display = 'none';
+                if (cropper) cropper.destroy();
+            });
+
+            closeModal.addEventListener('click', function() {
+                modal.style.display = 'none';
+                if (cropper) cropper.destroy();
+            });
+
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                    if (cropper) cropper.destroy();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

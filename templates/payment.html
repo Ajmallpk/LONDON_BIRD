@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Combined Orders</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #dfe9f3 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .payment-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .payment-container h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+        }
+
+        .payment-container .order-id {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 1.5rem;
+        }
+
+        .amount-box {
+            background: #f7fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .amount-box p {
+            font-size: 1rem;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+
+        .amount-box .amount {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .amount-box .breakdown {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-top: 0.5rem;
+            text-align: left;
+        }
+
+        .razorpay-container form {
+            display: inline-block;
+        }
+
+        .razorpay-container .razorpay-payment-button {
+            background: linear-gradient(90deg, #ff4d4f, #f56565);
+            border: none;
+            border-radius: 8px;
+            padding: 0.85rem 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .razorpay-container .razorpay-payment-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(245, 101, 101, 0.4);
+        }
+
+        .razorpay-container .razorpay-payment-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(245, 101, 101, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="payment-container">
+        <h2>Complete Your Payment</h2>
+        <p class="order-id">Order IDs: {{ order_ids|join:", " }}</p>
+
+        <div class="amount-box">
+            <p>I am ready to pay!!!</p>
+            <p class="amount">₹{{ total|floatformat:2 }}</p>
+            <div class="breakdown">
+                <p>Subtotal: ₹{{ subtotal|floatformat:2 }}</p>
+                <p>Product Discount: -₹{{ product_discount|floatformat:2 }}</p>
+                <p>Shipping: ₹{{ shipping|floatformat:2 }}</p>
+                {% if coupon_discount > 0 %}
+                <p>Coupon Discount: -₹{{ coupon_discount|floatformat:2 }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="razorpay-container">
+            <form action="{{ callback_url }}" method="POST">
+                {% csrf_token %}
+                <script src="https://checkout.razorpay.com/v1/checkout.js" 
+                    data-key="{{ razorpay_merchant_key }}"
+                    data-amount="{{ amount }}" 
+                    data-currency="{{ currency }}" 
+                    data-order_id="{{ razorpay_order_id }}"
+                    data-buttontext="Pay Now" 
+                    data-name="Your Store" 
+                    data-description="Combined Order Payment"
+                    data-image="{% static 'images/logo.png' %}" 
+                    data-theme.color="#ff4d4f"
+                    class="razorpay-payment-button"></script>
+                <input type="hidden" custom="Hidden Element" name="hidden">
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

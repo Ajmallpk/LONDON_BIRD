@@ -1,0 +1,575 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+            min-height: 100vh;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100%;
+            top: 0;
+            left: 0;
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        .sidebar.hidden {
+            transform: translateX(-250px);
+        }
+        .sidebar .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .sidebar h3 {
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 15px 20px;
+            cursor: pointer;
+        }
+        .sidebar ul li:hover {
+            background-color: #34495e;
+        }
+        .sidebar ul li.active {
+            background-color: #e74c3c;
+        }
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+            transition: margin-left 0.3s ease, width 0.3s ease;
+            flex-grow: 1;
+        }
+        .content.full-width {
+            margin-left: 0;
+            width: 100%;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            position: relative;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+            padding: 5px;
+        }
+        .header .user-profile img {
+            width: 30px;
+            border-radius: 50%;
+        }
+        .header .search-bar input {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 200px;
+        }
+        .report-section {
+            background-color: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .report-section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .filter-form {
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .filter-form label {
+            font-weight: 500;
+            color: #7f8c8d;
+        }
+        .filter-form select, .filter-form input {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Poppins', sans-serif;
+            width: 100%;
+            max-width: 150px;
+        }
+        .filter-form button {
+            padding: 5px 15px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.3s ease;
+        }
+        .filter-form button:hover {
+            background-color: #c0392b;
+        }
+        .download-buttons {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .download-buttons a {
+            padding: 8px 20px;
+            background-color: #27ae60;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.3s ease;
+        }
+        .download-buttons a:hover {
+            background-color: #219653;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        .summary-table, .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            min-width: 600px;
+        }
+        .summary-table th, .summary-table td,
+        .orders-table th, .orders-table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        .summary-table th, .orders-table th {
+            background-color: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+        .summary-table tr:nth-child(even),
+        .orders-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .error {
+            color: red;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .success {
+            color: green;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        /* Hidden class for rows */
+        .hidden {
+            display: none;
+        }
+        /* Style for the See More/See Less button */
+        .see-more-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem auto;
+            padding: 0.5rem 1rem;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .see-more-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        .see-more-btn .arrow {
+            margin-left: 0.5rem;
+            font-size: 1.2rem;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-250px);
+            }
+            .sidebar.visible {
+                transform: translateX(0);
+            }
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .content.full-width {
+                margin-left: 0;
+                width: 100%;
+            }
+            .header .hamburger {
+                display: block;
+            }
+            .header .search-bar input {
+                max-width: 150px;
+                font-size: 0.9rem;
+            }
+            .report-section {
+                padding: 15px;
+            }
+            .report-section h2 {
+                font-size: 1.2rem;
+            }
+            .filter-form {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .filter-form select, .filter-form input {
+                max-width: 100%;
+                font-size: 0.9rem;
+            }
+            .filter-form #custom-date-range {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .filter-form button {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+            .download-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .download-buttons a {
+                padding: 8px;
+                font-size: 0.9rem;
+                text-align: center;
+            }
+            .summary-table th, .summary-table td,
+            .orders-table th, .orders-table td {
+                font-size: 0.85rem;
+                padding: 8px;
+            }
+            .see-more-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            .see-more-btn .arrow {
+                font-size: 1rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .header .search-bar input {
+                max-width: 120px;
+                font-size: 0.8rem;
+            }
+            .report-section {
+                padding: 10px;
+            }
+            .report-section h2 {
+                font-size: 1rem;
+            }
+            .filter-form select, .filter-form input {
+                font-size: 0.8rem;
+                padding: 4px;
+            }
+            .filter-form button {
+                padding: 6px;
+                font-size: 0.8rem;
+            }
+            .download-buttons a {
+                padding: 6px;
+                font-size: 0.8rem;
+            }
+            .summary-table th, .summary-table td,
+            .orders-table th, .orders-table td {
+                font-size: 0.75rem;
+                padding: 6px;
+            }
+            .see-more-btn {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
+            }
+            .see-more-btn .arrow {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hamburger" onclick="toggleSidebar()">☰</div>
+        <div class="sidebar" id="sidebar"
+     style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); width: 100%; max-width: 250px; height: 100vh; overflow-y: auto; position: fixed; top: 0; left: 0; z-index: 1000;">
+    
+    <div class="logo" style="text-align: center; margin-bottom: 20px;">
+        <h3 style="font-size: 1.5rem; color: #007bff; font-weight: bold;">LONDON BIRD</h3>
+    </div>
+
+    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+        <li style="{% if request.resolver_match.url_name == 'admin_dashboard' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'admin_dashboard' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'admin_dashboard' %}white{% else %}#333{% endif %}; text-decoration: none;">Dashboard</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'user_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'user_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'user_management' %}white{% else %}#333{% endif %}; text-decoration: none;">User Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'product_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'product_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'product_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Product Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'category_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'category_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'category_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Category Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'admin_orders_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'admin_orders_list' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'admin_orders_list' %}white{% else %}#333{% endif %}; text-decoration: none;">Order Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'return_requests' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'return_requests' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'return_requests' %}white{% else %}#333{% endif %}; text-decoration: none;">Return Requests</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'inventory_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'inventory_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'inventory_management' %}white{% else %}#333{% endif %}; text-decoration: none;">Inventory Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'coupon_management' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'coupon_management' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'coupon_management' %}white{% else %}#333{% endif %}; text-decoration: none;">Coupon Management</a>
+        </li>
+        <li style="{% if request.resolver_match.url_name == 'sales_report' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'sales_report' %}" style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'sales_report' %}white{% else %}#333{% endif %}; text-decoration: none;">Sales Report</a>
+        </li>
+    </ul>
+</div>
+
+        <div class="content" id="content">
+           
+            <div class="report-section">
+                <h2>Sales Report ({{ start_date }} to {{ end_date }})</h2>
+                <div class="filter-form">
+                    <form method="GET" action="{% url 'sales_report' %}">
+                        <label for="date_filter">Filter by:</label>
+                        <select name="date_filter" id="date_filter" onchange="toggleCustomDate()">
+                            <option value="daily" {% if date_filter == 'daily' %}selected{% endif %}>Daily</option>
+                            <option value="weekly" {% if date_filter == 'weekly' %}selected{% endif %}>Weekly</option>
+                            <option value="monthly" {% if date_filter == 'monthly' %}selected{% endif %}>Monthly</option>
+                            <option value="yearly" {% if date_filter == 'yearly' %}selected{% endif %}>Yearly</option>
+                            <option value="custom" {% if date_filter == 'custom' %}selected{% endif %}>Custom</option>
+                        </select>
+                        <div id="custom-date-range" style="display: {% if date_filter == 'custom' %}inline-flex{% else %}none{% endif %}; align-items: center; gap: 10px;">
+                            <label for="start_date">Start Date:</label>
+                            <input type="date" name="start_date" id="start_date" value="{{ start_date|date:'Y-m-d' }}">
+                            <label for="end_date">End Date:</label>
+                            <input type="date" name="end_date" id="end_date" value="{{ end_date|date:'Y-m-d' }}">
+                        </div>
+                        <button type="submit">Apply Filter</button>
+                    </form>
+                </div>
+                <div class="download-buttons">
+                    <a href="{% url 'sales_report' %}?date_filter={{ date_filter }}{% if date_filter == 'custom' %}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}{% endif %}&download=pdf">Download PDF</a>
+                    <a href="{% url 'sales_report' %}?date_filter={{ date_filter }}{% if date_filter == 'custom' %}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}{% endif %}&download=excel">Download Excel</a>
+                </div>
+                <div class="table-wrapper">
+                    <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th colspan="2">Summary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Total Sales Count</td>
+                                <td>{{ sales_count }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total Order Amount</td>
+                                <td>₹{{ total_price|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <td>Orders with Discount Applied</td>
+                                <td>{{ orders_with_discount }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total Product/Category Discount</td>
+                                <td>₹{{ total_product_discount|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total Coupon Discount</td>
+                                <td>₹{{ total_coupon_discount|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total Discount</td>
+                                <td>₹{{ total_discount_combined|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <td>Net Amount</td>
+                                <td>₹{{ net_price|floatformat:2 }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-wrapper">
+                    <table class="orders-table" id="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                                <th>Total Amount (₹)</th>
+                                <th>Discount Applied</th>
+                                <th>Product Discount (₹)</th>
+                                <th>Coupon Discount (₹)</th>
+                                <th>Net Amount (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in orders_data %}
+                            <tr class="order-row">
+                                <td>{{ entry.order.id }}</td>
+                                <td>{{ entry.order.created_at|date:"Y-m-d H:i:s" }}</td>
+                                <td>{{ entry.order.total_price|floatformat:2 }}</td>
+                                <td>{% if entry.has_discount %}Yes{% else %}No{% endif %}</td>
+                                <td>{{ entry.product_discount|floatformat:2 }}</td>
+                                <td>{{ entry.order.discount_coupon_amount|default:0|floatformat:2 }}</td>
+                                <td>{{ entry.net_amount|floatformat:2 }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7">No orders found for the selected date range.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <button id="see-more-btn" class="see-more-btn">
+                    <span class="text">See More</span>
+                    <span class="arrow">▼</span>
+                </button>
+            </div>
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="{% if message.tags == 'success' %}success{% else %}error{% endif %}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <script>
+        function toggleCustomDate() {
+            const dateFilter = document.getElementById('date_filter').value;
+            const customDateRange = document.getElementById('custom-date-range');
+            if (dateFilter === 'custom') {
+                customDateRange.style.display = 'inline-flex';
+            } else {
+                customDateRange.style.display = 'none';
+            }
+        }
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            sidebar.classList.toggle('visible');
+            sidebar.classList.toggle('hidden');
+            content.classList.toggle('full-width');
+        }
+
+        // See More / See Less functionality for orders table
+        document.addEventListener('DOMContentLoaded', function () {
+            const rows = document.querySelectorAll('#orders-table .order-row');
+            const seeMoreBtn = document.getElementById('see-more-btn');
+            const textSpan = seeMoreBtn.querySelector('.text');
+            const arrowSpan = seeMoreBtn.querySelector('.arrow');
+            const itemsPerPage = 10;
+            let currentIndex = 10;
+            let isShowingMore = false;
+
+            // Initially hide rows beyond the first 10
+            rows.forEach((row, index) => {
+                if (index >= itemsPerPage) {
+                    row.classList.add('hidden');
+                }
+            });
+
+            // Hide the button if there are 10 or fewer rows
+            if (rows.length <= itemsPerPage) {
+                seeMoreBtn.style.display = 'none';
+            }
+
+            // Toggle between See More and See Less
+            seeMoreBtn.addEventListener('click', function () {
+                if (!isShowingMore) {
+                    // See More mode: reveal the next 10 rows
+                    const nextIndex = currentIndex + itemsPerPage;
+                    for (let i = currentIndex; i < nextIndex && i < rows.length; i++) {
+                        rows[i].classList.remove('hidden');
+                    }
+                    currentIndex = nextIndex;
+
+                    // If all rows are visible, switch to See Less mode
+                    if (currentIndex >= rows.length) {
+                        textSpan.textContent = 'See Less';
+                        arrowSpan.textContent = '▲';
+                        isShowingMore = true;
+                    }
+                } else {
+                    // See Less mode: hide all rows beyond the first 10
+                    rows.forEach((row, index) => {
+                        if (index >= itemsPerPage) {
+                            row.classList.add('hidden');
+                        }
+                    });
+                    currentIndex = 10;
+                    textSpan.textContent = 'See More';
+                    arrowSpan.textContent = '▼';
+                    isShowingMore = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

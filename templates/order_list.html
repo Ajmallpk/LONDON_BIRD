@@ -1,0 +1,863 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Suruchi - My Orders</title>
+    <meta name="description" content="Modern Bootstrap HTML5 Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/plugins/swiper-bundle.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/plugins/glightbox.min.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/css/vendor/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <style>
+        /* Existing Styles (Unchanged) */
+        .order__list__section { padding: 50px 0; }
+        .table { border-collapse: collapse; width: 100%; }
+        .table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        .table th { background-color: #f8f9fa; }
+        .table tbody tr:hover { background-color: #f1f1f1; }
+        .btn-danger { background-color: #dc3545; border-color: #dc3545; }
+        .btn-danger:hover { background-color: #c82333; border-color: #bd2130; }
+        .btn-primary { background-color: #28a745; border-color: #28a745; }
+        .btn-primary:hover { background-color: #218838; border-color: #1e7e34; }
+        .btn-secondary { background-color: #6c757d; border-color: #6c757d; }
+        .btn-secondary:hover { background-color: #5a6268; border-color: #545b62; }
+        .modal-content { border-radius: 10px; }
+        .modal-header { background-color: #dc3545; color: white; }
+        .alert { padding: 10px; border-radius: 5px; margin-bottom: 10px; }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .show-more-orders-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            transition: transform 0.3s ease;
+        }
+        .show-more-orders-btn:hover .show-more-arrow {
+            transform: translateY(2px);
+        }
+        .show-more-arrow {
+            width: 20px;
+            height: 20px;
+            color: #333;
+            transition: transform 0.3s ease, rotate 0.3s ease;
+        }
+        .show-more-arrow.up {
+            transform: rotate(180deg);
+        }
+        .orders-hidden {
+            display: none;
+        }
+        .orders-hidden.show {
+            display: table-row-group;
+        }
+
+        /* Off-Canvas Menu Styling (Copied from user_profile.html) */
+        .offcanvas__menu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+
+        .offcanvas__menu.active {
+            left: 0;
+        }
+
+        .offcanvas__menu--close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .offcanvas__menu--list {
+            list-style: none;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .offcanvas__menu--list li {
+            margin-bottom: 10px;
+        }
+
+        .offcanvas__menu--list a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .offcanvas__menu--list a:hover {
+            background: #f5f5f5;
+        }
+
+        /* Existing Responsive Media Queries */
+        @media (max-width: 991px) {
+            .main__header--inner {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .main__logo h1 {
+                font-size: 1.5rem;
+            }
+            .header__account--items,
+            .header__account2--items {
+                margin: 0 5px;
+            }
+            .main__footer {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .footer__widget {
+                flex: 1 1 100%;
+            }
+            .footer__bottom {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            .footer__payment {
+                text-align: center !important;
+            }
+            .my__account--section__inner {
+                flex-direction: column;
+            }
+            .account__left--sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+            }
+            .account__wrapper {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .breadcrumb__content--title {
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+            }
+            .breadcrumb__content--menu__items {
+                margin: 0 4px;
+            }
+            .breadcrumb__content--menu__items a,
+            .breadcrumb__content--menu__items span {
+                font-size: 0.85rem;
+            }
+            .order__list__section {
+                padding: 30px 0;
+            }
+            .row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .row .col-md-4 {
+                width: 100%;
+            }
+            .table th, .table td {
+                padding: 10px;
+            }
+            .btn-sm {
+                padding: 5px 10px;
+            }
+            .modal-dialog {
+                margin: 10px;
+            }
+            .modal-body {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .main__logo h1 {
+                font-size: 1.2rem;
+            }
+            .header__account--btn svg,
+            .header__account2--btn svg {
+                width: 20px;
+                height: 20px;
+            }
+            .header__account--btn__text {
+                display: none;
+            }
+            .items__count.wishlist,
+            .items__count.wishlist.style2 {
+                font-size: 10px;
+                padding: 2px 4px;
+            }
+            .breadcrumb__content--title {
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+            }
+            .breadcrumb__content--menu__items {
+                margin: 0 3px;
+            }
+            .breadcrumb__content--menu__items a,
+            .breadcrumb__content--menu__items span {
+                font-size: 0.75rem;
+            }
+            .account__menu--list a {
+                padding: 8px;
+            }
+            .table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            .table th, .table td {
+                padding: 8px;
+            }
+            .btn-sm {
+                padding: 4px 8px;
+            }
+            .show-more-orders-btn {
+                padding: 8px;
+            }
+            .show-more-arrow {
+                width: 16px;
+                height: 16px;
+            }
+            .modal-body {
+                padding: 10px;
+            }
+            /* Off-Canvas Menu (Copied from user_profile.html) */
+            .offcanvas__menu {
+                width: 200px;
+                left: -200px;
+            }
+            .offcanvas__menu.active {
+                left: 0;
+            }
+            .offcanvas__menu--list a {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .main__logo h1 {
+                font-size: 1rem;
+            }
+            .header__account--btn svg,
+            .header__account2--btn svg {
+                width: 18px;
+                height: 18px;
+            }
+            .header__account--items,
+            .header__account2--items {
+                margin: 0 3px;
+            }
+            .items__count.wishlist,
+            .items__count.wishlist.style2 {
+                font-size: 8px;
+                padding: 1px 3px;
+            }
+            .breadcrumb__section {
+                padding: 10px 0;
+            }
+            .breadcrumb__content--title {
+                font-size: 1rem;
+                margin-bottom: 8px;
+            }
+            .breadcrumb__content--menu__items {
+                margin: 0 2px;
+            }
+            .breadcrumb__content--menu__items a,
+            .breadcrumb__content--menu__items span {
+                font-size: 0.65rem;
+            }
+            .order__list__section {
+                padding: 20px 0;
+            }
+            .account__left--sidebar {
+                padding: 15px;
+            }
+            .account__wrapper {
+                padding: 15px;
+            }
+            .account__menu--list a {
+                padding: 6px;
+            }
+            .table th, .table td {
+                padding: 6px;
+            }
+            .btn-sm {
+                padding: 3px 6px;
+            }
+            .show-more-orders-btn {
+                padding: 6px;
+            }
+            .show-more-arrow {
+                width: 14px;
+                height: 14px;
+            }
+            .modal-body {
+                padding: 8px;
+            }
+            /* Off-Canvas Menu (Copied from user_profile.html) */
+            .offcanvas__menu {
+                width: 180px;
+                left: -180px;
+            }
+            .offcanvas__menu.active {
+                left: 0;
+            }
+            .offcanvas__menu--list a {
+                font-size: 12px;
+                padding: 6px;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .header__account--btn__text {
+                display: inline !important;
+            }
+            .header__account--items .header__account--btn__text {
+                display: inline !important;
+            }
+            /* Off-Canvas Menu (Copied from user_profile.html) */
+            .offcanvas__menu {
+                display: none; /* Hide off-canvas on larger screens where header menu is visible */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Start preloader -->
+    <div id="preloader">
+        <div id="ctn-preloader" class="ctn-preloader">
+            <div class="animation-preloader">
+                <div class="spinner"></div>
+                <div class="txt-loading">
+                    <span data-text-preloader="L" class="letters-loading">L</span>
+                    <span data-text-preloader="O" class="letters-loading">O</span>
+                    <span data-text-preloader="A" class="letters-loading">A</span>
+                    <span data-text-preloader="D" class="letters-loading">D</span>
+                    <span data-text-preloader="I" class="letters-loading">I</span>
+                    <span data-text-preloader="N" class="letters-loading">N</span>
+                    <span data-text-preloader="G" class="letters-loading">G</span>
+                </div>
+            </div>
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
+        </div>
+    </div>
+    <!-- End preloader -->
+
+    <!-- Start header area -->
+    <header class="header__section">
+        <div class="main__header header__sticky">
+            <div class="container-fluid">
+                <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
+                    <div class="offcanvas__header--menu__open">
+                        <a class="offcanvas__header--menu__open--btn" href="javascript:void(0)" data-offcanvas>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon offcanvas__header--menu__open--svg" viewBox="0 0 512 512">
+                                <path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M80 160h352M80 256h352M80 352h352"/>
+                            </svg>
+                            <span class="visually-hidden">Menu Open</span>
+                        </a>
+                    </div>
+                    <div class="main__logo">
+                        <h1>LONDON BIRD</h1>
+                    </div>
+                    <div class="header__account header__sticky--none">
+                        <ul class="d-flex">
+                            <li class="header__account--items">
+                                {% if user.is_authenticated %}
+                                <a class="header__account--btn" href="{% url 'user_profile' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg> 
+                                    <span class="header__account--btn__text">My Account</span>
+                                </a>
+                                {% endif %}
+                            </li>
+                            <li class="header__account--items">
+                                <a class="header__account--btn" href="{% url 'view_wishlist' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28.51" height="23.443" viewBox="0 0 512 512"><path d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></path></svg>
+                                    <span class="header__account--btn__text">Wish List</span>
+                                    <span class="items__count wishlist">{{ wishlist_items }}</span> 
+                                </a>
+                            </li>
+                            <li class="header__account--items">
+                                <a class="header__account--btn minicart__open--btn" href="{% url 'cart' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 14.706 13.534">
+                                        <g transform="translate(0 0)">
+                                          <g>
+                                            <path data-name="Path 16787" d="M4.738,472.271h7.814a.434.434,0,0,0,.414-.328l1.723-6.316a.466.466,0,0,0-.071-.4.424.424,0,0,0-.344-.179H3.745L3.437,463.6a.435.435,0,0,0-.421-.353H.431a.451.451,0,0,0,0,.9h2.24c.054.257,1.474,6.946,1.555,7.33a1.36,1.36,0,0,0-.779,1.242,1.326,1.326,0,0,0,1.293,1.354h7.812a.452.452,0,0,0,0-.9H4.74a.451.451,0,0,1,0-.9Zm8.966-6.317-1.477,5.414H5.085l-1.149-5.414Z" transform="translate(0 -463.248)" fill="currentColor"/>
+                                            <path data-name="Path 16788" d="M5.5,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,5.5,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,6.793,478.352Z" transform="translate(-1.191 -466.622)" fill="currentColor"/>
+                                            <path data-name="Path 16789" d="M13.273,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,13.273,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,14.566,478.352Z" transform="translate(-2.875 -466.622)" fill="currentColor"/>
+                                          </g>
+                                        </g>
+                                    </svg>
+                                    <span class="header__account--btn__text">My cart</span>   
+                                    <span class="items__count">{{ cart_items }}</span> 
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="header__menu d-none header__sticky--block d-lg-block">
+                        <nav class="header__menu--navigation">
+                            <ul class="d-flex">
+                                <!-- <li class="header__menu--items style2">
+                                    <a class="header__menu--link" href="{% url 'index' %}">Home</a>
+                                </li>
+                                <li class="header__menu--items mega__menu--items style2">
+                                    <a class="header__menu--link" href="{% url 'shop' %}">Shop</a>
+                                </li> -->
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="header__account header__account2 header__sticky--block">
+                        <ul class="d-flex">
+                            <li class="header__account--items header__account2--items">
+                                <a class="header__account--btn" href="{% url 'user_profile' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 512 512">
+                                        <path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+                                        <path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+                                    </svg>
+                                    <span class="visually-hidden">My Account</span>
+                                </a>
+                            </li>
+                            <li class="header__account--items header__account2--items">
+                                <a class="header__account--btn" href="{% url 'view_wishlist' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28.51" height="23.443" viewBox="0 0 512 512">
+                                        <path d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+                                    </svg>
+                                    <span class="items__count wishlist style2">{{ wishlist_items }}</span> 
+                                </a>
+                            </li>
+                            <li class="header__account--items header__account2--items">
+                                <a class="header__account--btn minicart__open--btn" href="{% url 'cart' %}" data-offcanvas>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 14.706 13.534">
+                                        <g transform="translate(0 0)">
+                                            <g>
+                                                <path data-name="Path 16787" d="M4.738,472.271h7.814a.434.434,0,0,0,.414-.328l1.723-6.316a.466.466,0,0,0-.071-.4.424.424,0,0,0-.344-.179H3.745L3.437,463.6a.435.435,0,0,0-.421-.353H.431a.451.451,0,0,0,0,.9h2.24c.054.257,1.474,6.946,1.555,7.33a1.36,1.36,0,0,0-.779,1.242,1.326,1.326,0,0,0,1.293,1.354h7.812a.452.452,0,0,0,0-.9H4.74a.451.451,0,0,1,0-.9Zm8.966-6.317-1.477,5.414H5.085l-1.149-5.414Z" transform="translate(0 -463.248)" fill="currentColor"/>
+                                                <path data-name="Path 16788" d="M5.5,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,5.5,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,6.793,478.352Z" transform="translate(-1.191 -466.622)" fill="currentColor"/>
+                                                <path data-name="Path 16789" d="M13.273,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,13.273,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,14.566,478.352Z" transform="translate(-2.875 -466.622)" fill="currentColor"/>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    <span class="items__count style2">{{ cart_items }}</span> 
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Off-Canvas Menu (Copied from user_profile.html) -->
+        <div class="offcanvas__menu" id="offcanvasMenu">
+            <button class="offcanvas__menu--close" id="offcanvasMenuClose">×</button>
+            <ul class="offcanvas__menu--list">
+                <li><a href="{% url 'index' %}">Home</a></li>
+                <li><a href="{% url 'shop' %}">Shop</a></li>
+                <li><a href="{% url 'user_profile' %}">My Profile</a></li>
+                <li><a href="{% url 'view_wishlist' %}">Wishlist</a></li>
+                <li><a href="{% url 'cart' %}">Cart</a></li>
+                
+            </ul>
+        </div>
+        <div class="header__bottom">
+            <div class="container-fluid">
+                <div class="header__bottom--inner position__relative d-none d-lg-flex justify-content-between align-items-center">
+                    <div class="header__menu">
+                        <nav class="header__menu--navigation">
+                            <ul class="d-flex">
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="{% url 'index' %}">Home</a>
+                                </li>
+                                <li class="header__menu--items mega__menu--items">
+                                    <a class="header__menu--link" href="{% url 'shop' %}">Shop</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- End header area -->
+
+    <main class="main__content_wrapper">
+        <!-- Start breadcrumb section -->
+                <section class="breadcrumb__section breadcrumb__bg"
+         style="background-image: url('{% static "assets/img/banner/38150.jpg" %}'); 
+                background-size: cover; 
+                background-position: center; 
+                background-repeat: no-repeat; 
+                width: 100%; 
+                min-height: 200px; 
+                padding: 40px 15px; 
+                display: flex; 
+                align-items: center;">
+    <div class="container" style="width: 100%;">
+        <div class="row row-cols-1">
+            <div class="col">
+                <div class="breadcrumb__content text-center">
+                    <h1 class="breadcrumb__content--title text-white mb-25" style="font-size: 2rem;">My Profile</h1>
+                    <ul class="breadcrumb__content--menu d-flex justify-content-center" style="gap: 10px; flex-wrap: wrap; list-style: none; padding: 0; margin: 0;">
+                        <li class="breadcrumb__content--menu__items">
+                            <a class="text-white" href="{% url 'index' %}" style="color: white; text-decoration: none;">Home</a>
+                        </li>
+                        <li class="breadcrumb__content--menu__items">
+                            <span class="text-white" style="color: white;">My orders</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+        <!-- End breadcrumb section -->
+
+        <!-- Start order list section -->
+        <section class="order__list__section section--padding">
+            <div class="container">
+                <div class="my__account--section__inner border-radius-10 d-flex">
+                    <div class="account__left--sidebar"
+     style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); max-width: 250px; width: 100%; margin-bottom: 20px;">
+
+    <h2 style="font-size: 1.5rem; margin-bottom: 20px; color: #333; font-weight: 600;">My Profile</h2>
+
+    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+
+        <li class="{% if request.resolver_match.url_name == 'user_profile' %}active{% endif %}"
+            style="{% if request.resolver_match.url_name == 'user_profile' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'user_profile' %}"
+               style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'user_profile' %}white{% else %}#333{% endif %}; text-decoration: none;">
+               My Profile
+            </a>
+        </li>
+
+        <li class="{% if request.resolver_match.url_name == 'user_address' %}active{% endif %}"
+            style="{% if request.resolver_match.url_name == 'user_address' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'user_address' %}"
+               style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'user_address' %}white{% else %}#333{% endif %}; text-decoration: none;">
+               My Address
+            </a>
+        </li>
+
+        <li class="{% if request.resolver_match.url_name == 'order_list' %}active{% endif %}"
+            style="{% if request.resolver_match.url_name == 'order_list' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'order_list' %}"
+               style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'order_list' %}white{% else %}#333{% endif %}; text-decoration: none;">
+               My Orders
+            </a>
+        </li>
+
+        <li class="{% if request.resolver_match.url_name == 'wallet_page' %}active{% endif %}"
+            style="{% if request.resolver_match.url_name == 'wallet_page' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'wallet_page' %}"
+               style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'wallet_page' %}white{% else %}#333{% endif %}; text-decoration: none;">
+               My Wallet
+            </a>
+        </li>
+
+        <li class="{% if request.resolver_match.url_name == 'user_available_coupons' %}active{% endif %}"
+            style="{% if request.resolver_match.url_name == 'user_available_coupons' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'user_available_coupons' %}"
+               style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'user_available_coupons' %}white{% else %}#333{% endif %}; text-decoration: none;">
+               Coupons
+            </a>
+        </li>
+
+        <li class="{% if request.resolver_match.url_name == 'referral_dashboard' %}active{% endif %}"
+            style="{% if request.resolver_match.url_name == 'referral_dashboard' %}background-color: #007bff; border-radius: 5px;{% endif %}">
+            <a href="{% url 'referral_dashboard' %}"
+               style="display: block; padding: 10px 15px; color: {% if request.resolver_match.url_name == 'referral_dashboard' %}white{% else %}#333{% endif %}; text-decoration: none;">
+               View Referral
+            </a>
+        </li>
+
+    </ul>
+</div>
+
+                    <div class="account__wrapper">
+                        <div class="account__content">
+                            <!-- Messages -->
+                            <div id="messages" class="messages">
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+
+                            <!-- Filters -->
+                            <div class="mb-4">
+                                <form method="GET" action="{% url 'order_list' %}">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search orders...">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select name="status" class="form-control">
+                                                <option value="">All Statuses</option>
+                                                {% for status_value, status_label in status_choices %}
+                                                    <option value="{{ status_value }}" {% if status == status_value %}selected{% endif %}>{{ status_label }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select name="sort" class="form-control">
+                                                <option value="-created_at" {% if sort == '-created_at' %}selected{% endif %}>Newest First</option>
+                                                <option value="created_at" {% if sort == 'created_at' %}selected{% endif %}>Oldest First</option>
+                                                <option value="total_price" {% if sort == 'total_price' %}selected{% endif %}>Price: Low to High</option>
+                                                <option value="-total_price" {% if sort == '-total_price' %}selected{% endif %}>Price: High to Low</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mt-2">Filter</button>
+                                </form>
+                            </div>
+
+                            <!-- Orders Table -->
+                            {% if orders %}
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                            <th>Payment Type</th>
+                                            <th>Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="orders-initial">
+                                        {% for order in orders|slice:":4" %}
+                                            <tr>
+                                                <td><a href="{% url 'order_detail' order.id %}">{{ order.id }}</a></td>
+                                                <td>₹{{ order.total_price|floatformat:2 }}</td>
+                                                <td>{{ order.get_status_display }}</td>
+                                                <td>{{ order.payment_type }}</td>
+                                                <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                                                <td>
+                                                    <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-primary">View</a>
+                                                    {% if order.status == 'delivered' %}
+                                                    <a href="{% url 'download_invoice' order.id %}" class="btn btn-sm btn-secondary">Download Invoice</a>
+                                                    {% endif %}
+                                                    {% if order.can_cancel_order %}
+                                                        <button class="btn btn-sm btn-danger cancel-order-btn" data-order-id="{{ order.id }}" data-url="{% url 'cancel_order' order.id %}">Cancel Order</button>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <!-- Hidden Orders -->
+                                    {% if orders|length > 4 %}
+                                    <tbody class="orders-hidden" id="hiddenOrders">
+                                        {% for order in orders|slice:"4:" %}
+                                            <tr>
+                                                <td><a href="{% url 'order_detail' order.id %}">{{ order.id }}</a></td>
+                                                <td>₹{{ order.total_price|floatformat:2 }}</td>
+                                                <td>{{ order.get_status_display }}</td>
+                                                <td>{{ order.payment_type }}</td>
+                                                <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                                                <td>
+                                                    <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-primary">View</a>
+                                                    {% if order.status == 'delivered' %}
+                                                    <a href="{% url 'download_invoice' order.id %}" class="btn btn-sm btn-secondary">Download Invoice</a>
+                                                    {% endif %}
+                                                    {% if order.can_cancel_order %}
+                                                        <button class="btn btn-sm btn-danger cancel-order-btn" data-order-id="{{ order.id }}" data-url="{% url 'cancel_order' order.id %}">Cancel Order</button>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <!-- Show More Button with Down Arrow -->
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="6" class="text-center">
+                                                <button class="show-more-orders-btn" onclick="toggleOrders()">
+                                                    <svg class="show-more-arrow" xmlns="http://www.w3.org/2000/svg" width="12.355" height="8.394" viewBox="0 0 10.355 6.394">
+                                                        <path d="M15.138,8.59l-3.961,3.952L7.217,8.59,6,9.807l5.178,5.178,5.178-5.178Z" transform="translate(-6 -8.59)" fill="currentColor"/>
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                    {% endif %}
+                                </table>
+                            {% else %}
+                                <p>No orders found.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End order list section -->
+
+        <!-- Cancel Order Modal -->
+        <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="cancel-order-form">
+                            <div class="form-group">
+                                <label for="cancel_reason">Reason for Cancellation</label>
+                                <textarea id="cancel_reason" class="form-control" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-danger">Confirm Cancellation</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Start footer section -->
+    <footer class="footer__section bg__black">
+        <div class="container-fluid">
+            <div class="main__footer d-flex justify-content-between">
+                <div class="footer__widget footer__widget--width">
+                    <h2 class="footer__widget--title text-ofwhite h3">About Us 
+                        <button class="footer__widget--button" aria-label="footer widget button">
+                            <svg class="footer__widget--title__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12.355" height="8.394" viewBox="0 0 10.355 6.394">
+                                <path d="M15.138,8.59l-3.961,3.952L7.217,8.59,6,9.807l5.178,5.178,5.178-5.178Z" transform="translate(-6 -8.59)" fill="currentColor"></path>
+                            </svg>
+                        </button>
+                    </h2>
+                    <div class="footer__widget--inner">
+                        <p class="footer__widget--desc text-ofwhite mb-20">Lorem ipsum dolor sit amet, consectetur adipisici ti elit <br> seddo eiusmod tempor incididunt utlabore et dolore <br> magna aliqua  enim ad minim veniam quisnostrud <br> exercitation ullamco</p>
+                        <div class="footer__social"></div>
+                    </div>
+                </div>
+                <div class="footer__widget--menu__wrapper d-flex footer__widget--width">
+                    <div class="footer__widget"></div>
+                    <div class="footer__widget"></div>
+                </div>
+                <div class="footer__widget footer__widget--width">
+                    <div class="footer__instagram footer__widget--inner">
+                        <div class="footer__instagram--list d-flex"></div>
+                        <div class="footer__instagram--list d-flex"></div>
+                    </div>
+                </div>
+                <div class="footer__widget footer__widget--width">
+                    <h1 style="color: #fff;">LB</h1>
+                </div>
+            </div>
+            <div class="footer__bottom d-flex justify-content-between align-items-center">
+                <p class="copyright__content text-ofwhite m-0">Copyright © 2022 <a class="copyright__content--link" href="index.html">Suruchi</a> . All Rights Reserved.Design By Suruchi</p>
+                <div class="footer__payment text-right">
+                    <img class="display-block" src="{% static 'assets/img/other/payment-visa-card.png' %}" alt="visa-card">
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- End footer section -->
+
+    <!-- Scroll top bar -->
+    <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
+
+    <!-- Scripts -->
+    <script src="{% static 'assets/js/vendor/popper.js' %}" defer="defer"></script>
+    <script src="{% static 'assets/js/vendor/bootstrap.min.js' %}" defer="defer"></script>
+    <script src="{% static 'assets/js/plugins/swiper-bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/glightbox.min.js' %}"></script>
+    <script src="{% static 'assets/js/script.js' %}"></script>
+    <script>
+        // Get CSRF token for AJAX requests
+        const csrftoken = "{{ csrf_token }}".match(/value="([^"]+)"/) ? "{{ csrf_token }}".match(/value="([^"]+)"/)[1] : "";
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const cancelButtons = document.querySelectorAll('.cancel-order-btn');
+            const cancelForm = document.getElementById('cancel-order-form');
+            const messagesDiv = document.getElementById('messages');
+
+            function showMessage(message, type) {
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.textContent = message;
+                messagesDiv.appendChild(alert);
+                setTimeout(() => alert.remove(), 5000);
+            }
+
+            cancelButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const url = this.dataset.url;
+                    const orderId = this.dataset.orderId;
+                    cancelForm.dataset.url = url;
+                    cancelForm.dataset.orderId = orderId;
+                    new bootstrap.Modal(document.getElementById('cancelOrderModal')).show();
+                });
+            });
+
+            cancelForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const url = this.dataset.url;
+                const orderId = this.dataset.orderId;
+                const reason = document.getElementById('cancel_reason').value;
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ reason })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage(data.message, 'success');
+                        setTimeout(() => {
+                            window.location.href = data.redirect_url;
+                        }, 1000);
+                    } else {
+                        showMessage(data.message, 'error');
+                    }
+                    bootstrap.Modal.getInstance(document.getElementById('cancelOrderModal')).hide();
+                })
+                .catch(error => {
+                    console.error('Cancel error:', error);
+                    showMessage('An error occurred. Please try again.', 'error');
+                });
+            });
+
+            // Off-Canvas Menu Toggle (Copied from user_profile.html)
+            document.querySelector('[data-offcanvas]').addEventListener('click', function() {
+                document.getElementById('offcanvasMenu').classList.add('active');
+            });
+
+            document.getElementById('offcanvasMenuClose').addEventListener('click', function() {
+                document.getElementById('offcanvasMenu').classList.remove('active');
+            });
+        });
+
+        function toggleOrders() {
+            const hiddenOrders = document.getElementById('hiddenOrders');
+            const arrow = document.querySelector('.show-more-arrow');
+            
+            if (hiddenOrders.classList.contains('show')) {
+                hiddenOrders.classList.remove('show');
+                arrow.classList.remove('up');
+            } else {
+                hiddenOrders.classList.add('show');
+                arrow.classList.add('up');
+            }
+        }
+    </script>
+</body>
+</html>

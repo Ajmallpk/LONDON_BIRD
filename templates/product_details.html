@@ -1,0 +1,1359 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Suruchi - {{ product.product.name }}</title>
+  <meta name="description" content="Morden Bootstrap HTML5 Template">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/plugins/swiper-bundle.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/plugins/glightbox.min.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'assets/css/vendor/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+  <style>
+    /* Existing styles unchanged */
+    .zoom-container {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+
+    .product__media--preview__items--img {
+      transition: transform 0.5s ease;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    .zoom-container:hover .product__media--preview__items--img {
+      transform: scale(1.2);
+    }
+
+    .product__media--nav .swiper-slide {
+      opacity: 0.6;
+      transition: opacity 0.3s ease, border 0.3s ease;
+      border: 2px solid transparent;
+      cursor: pointer;
+    }
+
+    .product__media--nav .swiper-slide-thumb-active {
+      opacity: 1;
+      border: 2px solid #007bff;
+    }
+
+    .product__media--nav__items--img {
+      width: 100%;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+      color: #007bff;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      transition: background 0.3s ease;
+    }
+
+    .swiper-button-next:hover,
+    .swiper-button-prev:hover {
+      background: rgba(0, 123, 255, 0.9);
+      color: #fff;
+    }
+
+    .product__details--info {
+      padding: 20px;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+    }
+
+    .product__details--info__title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #1a1a1a;
+      font-family: 'Jost', sans-serif;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .product__details--info__title:hover::after {
+      width: 100px;
+      background: #007bff;
+    }
+
+    .product__details--info__title::after {
+      content: '';
+      width: 0;
+      height: 3px;
+      background: transparent;
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      transition: width 0.3s ease, background 0.3s ease;
+    }
+
+    .product__details--info__price {
+      margin-bottom: 15px;
+    }
+
+    .current__price {
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: #e74c3c;
+      font-family: 'Jost', sans-serif;
+    }
+
+    .product__details--info__desc__wrapper {
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      animation: slideIn 0.5s ease-out;
+    }
+
+    .product__details--info__desc__header {
+      background: #dc0c0c;
+      color: #fff;
+      padding: 10px 15px;
+      font-size: 1.5rem;
+      font-weight: 500;
+      font-family: 'Jost', sans-serif;
+    }
+
+    .product__details--info__desc {
+      font-size: 1.3rem;
+      color: #4a4a4a;
+      line-height: 1.7;
+      font-family: 'Jost', sans-serif;
+      padding: 15px;
+      background: #fff;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .variant__selection {
+      margin-bottom: 20px;
+    }
+
+    .variant__selection__title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      font-family: 'Jost', sans-serif;
+      margin-bottom: 8px;
+    }
+
+    .variant__options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .variant__option--size {
+      padding: 8px 14px;
+      font-size: 1.4rem;
+      font-family: 'Jost', sans-serif;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .variant__option--size:hover {
+      border-color: #007bff;
+      background: #f0f7ff;
+    }
+
+    .variant__option--size.active {
+      background: #007bff;
+      color: #fff;
+      border-color: #007bff;
+    }
+
+    .variant__option--size:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .variant__option--color {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .variant__option--color:hover {
+      border-color: #007bff;
+      transform: scale(1.2);
+    }
+
+    .variant__option--color.active {
+      border: 2px solid #007bff;
+      box-shadow: 0 0 6px rgba(0,123,255,0.5);
+    }
+
+    .variant__option--color:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .action__btn {
+      display: inline-block;
+      padding: 12px 24px;
+      font-size: 1.4rem;
+      font-weight: 500;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 4px;
+      margin-right: 10px;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+      font-family: 'Jost', sans-serif;
+    }
+
+    .add-to-cart {
+      background-color: #dc0c0c;
+      color: rgb(255, 250, 250);
+    }
+
+    .add-to-cart:hover {
+      background-color: #b61d1d;
+      transform: translateY(-2px);
+    }
+
+    .add-to-wishlist {
+      background-color: #2ecc71;
+      color: white;
+    }
+
+    .add-to-wishlist:hover {
+      background-color: #27ae60;
+      transform: translateY(-2px);
+    }
+
+    .review__section {
+      margin-top: 20px;
+    }
+
+    .review__section h3 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      font-family: 'Jost', sans-serif;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .review__section h3::after {
+      content: '';
+      width: 30px;
+      height: 2px;
+      background: #007bff;
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+    }
+
+    .review__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .review__card {
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .review__card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .review__rating {
+      color: #f1c40f;
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+
+    .review__rating .star {
+      margin-right: 3px;
+    }
+
+    .review__author {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #1a1a1a;
+      font-family: 'Jost', sans-serif;
+      margin-bottom: 5px;
+    }
+
+    .review__date {
+      font-size: 1rem;
+      color: #777;
+      font-family: 'Jost', sans-serif;
+      margin-bottom: 8px;
+    }
+
+    .review__comment {
+      font-size: 1.5rem;
+      color: #4a4a4a;
+      line-height: 1.4;
+      font-family: 'Jost', sans-serif;
+    }
+
+    @media (max-width: 768px) {
+      .product__media--nav__items--img {
+        height: 60px;
+      }
+
+      .swiper-button-next,
+      .swiper-button-prev {
+        width: 30px;
+        height: 30px;
+      }
+
+      .product__details--info {
+        padding: 15px;
+      }
+
+      .product__details--info__title {
+        font-size: 2rem;
+      }
+
+      .current__price {
+        font-size: 1.7rem;
+      }
+
+      .product__details--info__desc__header {
+        font-size: 1rem;
+        padding: 8px 12px;
+      }
+
+      .product__details--info__desc {
+        font-size: 0.95rem;
+        padding: 12px;
+      }
+
+      .variant__selection__title {
+        font-size: 1.1rem;
+      }
+
+      .variant__option--size {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+      }
+
+      .variant__option--color {
+        width: 25px;
+        height: 25px;
+      }
+
+      .review__section {
+        margin-top: 15px;
+      }
+
+      .review__section h3 {
+        font-size: 1.4rem;
+      }
+
+      .review__card {
+        padding: 12px;
+      }
+
+      .review__rating {
+        font-size: 1.2rem;
+      }
+
+      .review__author {
+        font-size: 1rem;
+      }
+
+      .review__comment {
+        font-size: 0.85rem;
+      }
+    }
+    .related__products__section {
+  margin-top: 40px;
+}
+
+.related__products__section h3 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  font-family: 'Jost', sans-serif;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.related__products__section h3::after {
+  content: '';
+  width: 30px;
+  height: 2px;
+  background: #007bff;
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+}
+
+.related__products__carousel {
+  position: relative;
+  padding: 0 40px; /* Space for navigation arrows */
+}
+
+.related__product__card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.related__product__card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.related__product__image img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+
+.related__product__info {
+  padding: 10px;
+  text-align: center;
+}
+
+.related__product__name {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  font-family: 'Jost', sans-serif;
+  margin-bottom: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.related__product__price {
+  font-family: 'Jost', sans-serif;
+}
+
+.related__product__price .discounted-price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #e74c3c;
+}
+
+.related__product__price .current-price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+/* Style for navigation buttons */
+.related-products-next,
+.related-products-prev {
+  color: #007bff;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.related-products-next:hover,
+.related-products-prev:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+.related-products-next::after,
+.related-products-prev::after {
+  font-size: 20px;
+}
+
+@media (max-width: 768px) {
+  .related__products__section {
+    margin-top: 30px;
+  }
+
+  .related__products__section h3 {
+    font-size: 1.4rem;
+  }
+
+  .related__products__carousel {
+    padding: 0 30px;
+  }
+
+  .related__product__image img {
+    height: 120px;
+  }
+
+  .related__product__name {
+    font-size: 1rem;
+  }
+
+  .related__product__price .discounted-price,
+  .related__product__price .current-price {
+    font-size: 0.95rem;
+  }
+
+  .related-products-next,
+  .related-products-prev {
+    width: 30px;
+    height: 30px;
+  }
+
+  .related-products-next::after,
+  .related-products-prev::after {
+    font-size: 16px;
+  }
+}
+  </style>
+</head>
+<body>
+  <!-- Start preloader -->
+  <div id="preloader">
+    <div id="ctn-preloader" class="ctn-preloader">
+      <div class="animation-preloader">
+        <div class="spinner"></div>
+        <div class="txt-loading">
+          <span data-text-preloader="L" class="letters-loading">L</span>
+          <span data-text-preloader="O" class="letters-loading">O</span>
+          <span data-text-preloader="A" class="letters-loading">A</span>
+          <span data-text-preloader="D" class="letters-loading">D</span>
+          <span data-text-preloader="I" class="letters-loading">I</span>
+          <span data-text-preloader="N" class="letters-loading">N</span>
+          <span data-text-preloader="G" class="letters-loading">G</span>
+        </div>
+      </div>
+      <div class="loader-section section-left"></div>
+      <div class="loader-section section-right"></div>
+    </div>
+  </div>
+  <!-- End preloader -->
+
+  <!-- Start header area -->
+  <header class="header__section">
+  <div class="main__header header__sticky">
+            <div class="container-fluid">
+                <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
+                    <div class="offcanvas__header--menu__open ">
+                        <a class="offcanvas__header--menu__open--btn" href="javascript:void(0)" data-offcanvas>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon offcanvas__header--menu__open--svg" viewBox="0 0 512 512"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M80 160h352M80 256h352M80 352h352"/></svg>
+                            <span class="visually-hidden">Menu Open</span>
+                        </a>
+                    </div>
+                    <div class="main__logo">
+                        <h1>LONDON BIRD</h1>
+                    </div>
+                    <div class="header__search--widget header__sticky--none d-none d-lg-block">
+                        <!-- <form class="d-flex header__search--form" action="#">
+                            
+                            <div class="header__select--categories select">
+                                <form action="{% url 'shop' %}" method="get"></form>
+                                <select class="header__select--inner" name="category" onchange="this.form.submit()">
+                                    <option value="1" {% if request.GET.category == '1' or not request.GET.category %}selected{% endif %}>All Categories</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                                            {{ category.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                            </div> -->
+                            
+                            <!-- <div class="header__search--box">
+                                <label>
+                                    <input class="header__search--input" placeholder="Keyword here..." type="text">
+                                </label>
+                                <button class="header__search--button bg__secondary text-white" type="submit" aria-label="search button">
+                                    <svg class="header__search--button__svg" xmlns="http://www.w3.org/2000/svg" width="27.51" height="26.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"></path><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"></path></svg>
+                                </button>
+                            </div> -->
+                        </form>
+                    </div>
+                    <div class="header__account header__sticky--none">
+                        <ul class="d-flex">
+                            <li class="header__account--items">
+                                {% if user.is_authenticated %}
+                                <a class="header__account--btn" href="{% url 'user_profile' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg"  width="26.51" height="23.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg> 
+                                    <span class="header__account--btn__text">My Account</span>
+                                </a>
+                                {% endif %}
+                            </li>
+                            <li class="header__account--items d-none d-lg-block">
+                                <a class="header__account--btn" href="{% url 'view_wishlist' %}">
+                                    <svg  xmlns="http://www.w3.org/2000/svg" width="28.51" height="23.443" viewBox="0 0 512 512"><path d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></path></svg>
+                                    <span class="header__account--btn__text" > Wish List</span>
+                                    <span class="items__count wishlist">{{ wishlist_items }}</span> 
+                                </a>
+                            </li>
+                            <li class="header__account--items">
+                                <a class="header__account--btn minicart__open--btn" href="{% url 'cart' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 14.706 13.534">
+                                        <g  transform="translate(0 0)">
+                                          <g >
+                                            <path  data-name="Path 16787" d="M4.738,472.271h7.814a.434.434,0,0,0,.414-.328l1.723-6.316a.466.466,0,0,0-.071-.4.424.424,0,0,0-.344-.179H3.745L3.437,463.6a.435.435,0,0,0-.421-.353H.431a.451.451,0,0,0,0,.9h2.24c.054.257,1.474,6.946,1.555,7.33a1.36,1.36,0,0,0-.779,1.242,1.326,1.326,0,0,0,1.293,1.354h7.812a.452.452,0,0,0,0-.9H4.74a.451.451,0,0,1,0-.9Zm8.966-6.317-1.477,5.414H5.085l-1.149-5.414Z" transform="translate(0 -463.248)" fill="currentColor"/>
+                                            <path  data-name="Path 16788" d="M5.5,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,5.5,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,6.793,478.352Z" transform="translate(-1.191 -466.622)" fill="currentColor"/>
+                                            <path  data-name="Path 16789" d="M13.273,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,13.273,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,14.566,478.352Z" transform="translate(-2.875 -466.622)" fill="currentColor"/>
+                                          </g>
+                                        </g>
+                                    </svg>
+                                  <span class="header__account--btn__text">My cart</span>   
+                                    <span class="items__count">{{ cart_items }}</span> 
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="header__menu d-none header__sticky--block d-lg-block">
+                        <nav class="header__menu--navigation">
+                            <ul class="d-flex">
+                                <li class="header__menu--items style2">
+                                    <!-- <a class="header__menu--link" href="{% url 'index' %}">Home 
+                                      
+                                    </a>
+                                    -->
+                                </li>
+                                <li class="header__menu--items mega__menu--items style2">
+                                    <!-- <a class="header__menu--link" href="{% url 'shop' %}">Shop  -->
+                                       
+                                    </a>
+                                    <ul class="header__mega--menu d-flex">
+                                        <li class="header__mega--menu__li">
+                                           
+                                        </li>
+                                        <li class="header__mega--menu__li">
+                                           
+                                        </li>
+                                        <li class="header__mega--menu__li">
+                                           
+                                        </li>
+                                        <li class="header__mega--menu__li">
+                                           
+                                        </li>
+                                    </ul>
+                                </li>
+                                <!-- <li class="header__menu--items style2">
+                                    <a class="header__menu--link" href="about.html">About US </a>  
+                                </li>
+                                
+                                <!-- <li class="header__menu--items style2 d-none d-xl-block">
+                                    <a class="header__menu--link" href="shop.html">Categories </a>  
+                                </li> -->
+                                
+                                <!-- <li class="header__menu--items style2">
+                                    <a class="header__menu--link" href="contact.html">Contact </a>  
+                                </li> -->
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="header__account header__account2 header__sticky--block">
+                        <ul class="d-flex">
+                            <!-- <li class="header__account--items header__account2--items  header__account--search__items d-none d-lg-block">
+                                <a class="header__account--btn search__open--btn" href="javascript:void(0)" data-offcanvas>
+                                    <svg class="header__search--button__svg" xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>  
+                                    <span class="visually-hidden">Search</span>
+                                </a>
+                            </li> -->
+                            <li class="header__account--items header__account2--items">
+                                <a class="header__account--btn" href="{% url 'user_profile' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg"  width="26.51" height="23.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg>
+                                    <span class="visually-hidden">My Account</span>
+                                </a>
+                            </li>
+                            <li class="header__account--items header__account2--items d-none d-lg-block">
+                                <a class="header__account--btn" href="{% url 'view_wishlist' %}">
+                                    <svg  xmlns="http://www.w3.org/2000/svg" width="28.51" height="23.443" viewBox="0 0 512 512"><path d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></path></svg>
+                                    <span class="items__count  wishlist style2">{{wishlist_items}}</span> 
+                                </a>
+                            </li>
+                            <li class="header__account--items header__account2--items">
+                                <a class="header__account--btn minicart__open--btn" href="{% url 'cart' %}" >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 14.706 13.534">
+                                        <g  transform="translate(0 0)">
+                                        <g >
+                                            <path  data-name="Path 16787" d="M4.738,472.271h7.814a.434.434,0,0,0,.414-.328l1.723-6.316a.466.466,0,0,0-.071-.4.424.424,0,0,0-.344-.179H3.745L3.437,463.6a.435.435,0,0,0-.421-.353H.431a.451.451,0,0,0,0,.9h2.24c.054.257,1.474,6.946,1.555,7.33a1.36,1.36,0,0,0-.779,1.242,1.326,1.326,0,0,0,1.293,1.354h7.812a.452.452,0,0,0,0-.9H4.74a.451.451,0,0,1,0-.9Zm8.966-6.317-1.477,5.414H5.085l-1.149-5.414Z" transform="translate(0 -463.248)" fill="currentColor"/>
+                                            <path  data-name="Path 16788" d="M5.5,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,5.5,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,6.793,478.352Z" transform="translate(-1.191 -466.622)" fill="currentColor"/>
+                                            <path  data-name="Path 16789" d="M13.273,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,13.273,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,14.566,478.352Z" transform="translate(-2.875 -466.622)" fill="currentColor"/>
+                                        </g>
+                                        </g>
+                                    </svg>
+                                    <span class="items__count style2">{{ cart_items }}</span> 
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="header__bottom">
+            <div class="container-fluid">
+                <div class="header__bottom--inner position__relative d-none d-lg-flex justify-content-between align-items-center">
+                    <div class="header__menu">
+                        <nav class="header__menu--navigation">
+                            <ul class="d-flex">
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="{% url 'index' %}">Home 
+                                       
+                                    </a>
+                                  
+                                </li>
+                                   <li class="offcanvas__menu_li">
+                            <a class="offcanvas__menu_item" style="padding-top: 22px;" href="{% url 'shop' %}">Shop</a>
+                            <ul class="offcanvas__sub_menu">
+                               
+                            </ul>
+                        </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+  </header>
+  <!-- End header area -->
+  <div class="offcanvas__header">
+            <div class="offcanvas__inner">
+                <div class="offcanvas__logo">
+                    <a class="offcanvas__logo_link" href="{% url 'index' %}">
+                        <h1>LONDON BIRD</h1>
+                    </a>
+                    <button class="offcanvas__close--btn" data-offcanvas>close</button>
+                </div>
+                <nav class="offcanvas__menu">
+                    <ul class="offcanvas__menu_ul">
+                        <li class="offcanvas__menu_li">
+                            <a class="offcanvas__menu_item" href=" ">Home</a>
+                           
+                        </li>
+                        <li class="offcanvas__menu_li">
+                            <a class="offcanvas__menu_item" href="{% url 'shop' %}">Shop</a>
+                            
+                        </li>
+
+
+                        <li class="offcanvas__menu_li">
+                            <a class="offcanvas__menu_item" href="{% url 'view_wishlist' %}">My wishlist</a>
+                            
+                        </li>
+
+                        {% if user.is_authenticated %}
+                        <li class="header__menu--items" style="padding-left: 15px;">
+                            <form method="post" action="{% url 'logout' %}" style="margin: 0; display: inline;">
+                                {% csrf_token %}
+                            <button class="header__menu--link" style="padding-top: 15px; border: none; background: none; outline: none; color: red; font-weight: bold;" href="{% url 'logout' %}">Logout</button>
+                            </form>
+                        </li>
+                        {% else %}
+                        <li class="header__menu--items d-none d-xl-block">
+                            <a class="header__menu--link" href="{% url 'login' %}">login </a>  
+                        </li>
+                        <li class="header__menu--items">
+                            <a class="header__menu--link" href="{% url 'register' %}">register</a>
+                        </li>
+                        {% endif %}
+                        <!-- <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="about.html">About</a></li>
+                        <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="contact.html">Contact</a></li> -->
+                    </ul>
+                    
+                    <!-- <div class="offcanvas__account--items">
+                        <a class="offcanvas__account--items__btn d-flex align-items-center" href="{% url 'login' %}">
+                        <span class="offcanvas__account--items__icon"> 
+                            <svg xmlns="http://www.w3.org/2000/svg"  width="20.51" height="19.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg> 
+                            </span>
+                        <span class="offcanvas__account--items__label">Login / Register</span>
+                        </a>
+                    </div> -->
+                    <div class="language__currency">
+                        
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+  <main class="main__content_wrapper">
+    <!-- Start product details section -->
+    <section class="product__details--section section--padding">
+      <div class="container">
+        <div class="row row-cols-lg-2 row-cols-md-2">
+          <div class="col">
+            <div class="product__details--media">
+              <!-- Main Image Slider -->
+              <div class="product__media--preview swiper">
+                <div class="swiper-wrapper">
+                  <!-- Main Image -->
+                  <div class="swiper-slide zoom-container">
+                    <div class="product__media--preview__items">
+                      <a class="product__media--preview__items--link glightbox" data-gallery="product-media-preview" href="{{ product.image_main.url|default:'/media/placeholder.jpg' }}">
+                        <img class="product__media--preview__items--img" src="{{ product.image_main.url|default:'/media/placeholder.jpg' }}" alt="{{ product.product.name }}">
+                      </a>
+                      <div class="product__media--view__icon">
+                        <a class="product__media--view__icon--link glightbox" href="{{ product.image_main.url|default:'/media/placeholder.jpg' }}" data-gallery="product-media-preview">
+                          <svg class="product__media--view__icon--svg" xmlns="http://www.w3.org/2000/svg" width="22.51" height="22.443" viewBox="0 0 512 512">
+                            <path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/>
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Additional Images -->
+                  {% if product.image_1 %}
+                  <div class="swiper-slide zoom-container">
+                    <div class="product__media--preview__items">
+                      <a class="product__media--preview__items--link glightbox" data-gallery="product-media-preview" href="{{ product.image_1.url|default:'/media/placeholder.jpg' }}">
+                        <img class="product__media--preview__items--img" src="{{ product.image_1.url|default:'/media/placeholder.jpg' }}" alt="{{ product.product.name }}">
+                      </a>
+                      <div class="product__media--view__icon">
+                        <a class="product__media--view__icon--link glightbox" href="{{ product.image_1.url|default:'/media/placeholder.jpg' }}" data-gallery="product-media-preview">
+                          <svg class="product__media--view__icon--svg" xmlns="http://www.w3.org/2000/svg" width="22.51" height="22.443" viewBox="0 0 512 512">
+                            <path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/>
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+                  
+                  {% if product.image_2 %}
+                  <div class="swiper-slide zoom-container">
+                    <div class="product__media--preview__items">
+                      <a class="product__media--preview__items--link glightbox" data-gallery="product-media-preview" href="{{ product.image_2.url|default:'/media/placeholder.jpg' }}">
+                        <img class="product__media--preview__items--img" src="{{ product.image_2.url|default:'/media/placeholder.jpg' }}" alt="{{ product.product.name }}">
+                      </a>
+                      <div class="product__media--view__icon">
+                        <a class="product__media--view__icon--link glightbox" href="{{ product.image_2.url|default:'/media/placeholder.jpg' }}" data-gallery="product-media-preview">
+                          <svg class="product__media--view__icon--svg" xmlns="http://www.w3.org/2000/svg" width="22.51" height="22.443" viewBox="0 0 512 512">
+                            <path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/>
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+                  
+                  {% if product.image_3 %}
+                  <div class="swiper-slide zoom-container">
+                    <div class="product__media--preview__items">
+                      <a class="product__media--preview__items--link glightbox" data-gallery="product-media-preview" href="{{ product.image_3.url|default:'/media/placeholder.jpg' }}">
+                        <img class="product__media--preview__items--img" src="{{ product.image_3.url|default:'/media/placeholder.jpg' }}" alt="{{ product.product.name }}">
+                      </a>
+                      <div class="product__media--view__icon">
+                        <a class="product__media--view__icon--link glightbox" href="{{ product.image_3.url|default:'/media/placeholder.jpg' }}" data-gallery="product-media-preview">
+                          <svg class="product__media--view__icon--svg" xmlns="http://www.w3.org/2000/svg" width="22.51" height="22.443" viewBox="0 0 512 512">
+                            <path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/>
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Thumbnail Navigation -->
+              <div class="product__media--nav swiper">
+                <div class="swiper-wrapper">
+                  <!-- Main Thumbnail -->
+                  <div class="swiper-slide">
+                    <div class="product__media--nav__items">
+                      <img class="product__media--nav__items--img" src="{{ product.image_main.url|default:'/media/placeholder.jpg' }}" alt="{{ product.product.name }}">
+                    </div>
+                  </div>
+                  
+                  <!-- Additional Thumbnails -->
+                  {% if product.image_1 %}
+                  <div class="swiper-slide">
+                    <div class="product__media--nav__items">
+                      <img class="product__media--nav__items--img" src="{{ product.image_1.url|default:'/media/placeholder.jpg' }}" alt="{{ product.product.name }}">
+                    </div>
+                  </div>
+                  {% endif %}
+                  
+                  {% if product.image_2 %}
+                  <div class="swiper-slide">
+                    <div class="product__media--nav__items">
+                      <img class="product__media--nav__items--img" src="{{ product.image_2.url|default:'/media/placeholder.jpg' }}" alt="{{ product.product.name }}">
+                    </div>
+                  </div>
+                  {% endif %}
+                  
+                  {% if product.image_3 %}
+                  <div class="swiper-slide">
+                    <div class="product__media--nav__items">
+                      <img class="product__media--nav__items--img" src="{{ product.image_3.url|default:'/media/placeholder.jpg' }}" alt="{{ product.product.name }}">
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+              </div>
+
+              <!-- Related Products Section -->
+<div class="related__products__section">
+  <h3>Related Products</h3>
+  {% if related_products %}
+  <div class="related__products__carousel swiper">
+    <div class="swiper-wrapper">
+      {% for related_product in related_products %}
+      <div class="swiper-slide">
+        <div class="related__product__card">
+          <a href="{% url 'product_details' related_product.id %}">
+            <div class="related__product__image">
+              <img src="{{ related_product.image_main.url|default:'/media/placeholder.jpg' }}" alt="{{ related_product.product.name }}">
+            </div>
+            <div class="related__product__info">
+              <h4 class="related__product__name">{{ related_product.product.name }}</h4>
+              <div class="related__product__price">
+                {% if related_product.get_discounted_price %}
+                  {% with discounted=related_product.get_discounted_price original=related_product.product.price %}
+                    {% if discounted < original %}
+                      <span class="discounted-price">₹{{ discounted|floatformat:2 }}</span>
+                      <span class="original-price" style="text-decoration: line-through; color: #777; font-size: 0.9rem; margin-left: 5px;">
+                        ₹{{ original|floatformat:2 }}
+                      </span>
+                    {% else %}
+                      <span class="current-price">₹{{ original|floatformat:2 }}</span>
+                    {% endif %}
+                  {% endwith %}
+                {% else %}
+                  <span class="current-price">₹{{ related_product.product.price|floatformat:2 }}</span>
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <!-- Navigation buttons -->
+    <div class="swiper-button-next related-products-next"></div>
+    <div class="swiper-button-prev related-products-prev"></div>
+  </div>
+  <!-- Initialize Swiper for Related Products -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const relatedProductsSwiper = new Swiper('.related__products__carousel', {
+        slidesPerView: 1,
+        spaceBetween: 20,
+        navigation: {
+          nextEl: '.related-products-next',
+          prevEl: '.related-products-prev',
+        },
+        breakpoints: {
+          640: {
+            slidesPerView: 2,
+            spaceBetween: 20,
+          },
+          1024: {
+            slidesPerView: 3,
+            spaceBetween: 30,
+          },
+        },
+      });
+    });
+  </script>
+  {% else %}
+  <p style="font-size: 1rem; color: #777; font-family: 'Jost', sans-serif;">No related products available.</p>
+  {% endif %}
+</div>
+            </div>
+            
+          </div>
+          <div class="col">
+            <div class="product__details--info">
+              <h2 class="product__details--info__title">{{ product.product.name }}</h2>
+              <div class="product__details--info__price">
+                <span class="current__price">
+                  {% if original_price == 0 %}
+                    <!-- Display a message if price is unavailable -->
+                    <span style="color: #777;">Price unavailable</span>
+                  {% else %}
+                    {% if applicable_offer %}
+                      <!-- Display discounted price and original price -->
+                      <span class="discounted-price">₹{{ discounted_price|floatformat:2 }}</span>
+                      <span class="original-price" style="text-decoration: line-through; color: #777; font-size: 1.2rem; margin-left: 10px;">
+                        ₹{{ original_price|floatformat:2 }}
+                      </span>
+                    {% else %}
+                      <!-- Display original price only -->
+                      ₹{{ original_price|floatformat:2 }}
+                    {% endif %}
+                  {% endif %}
+                </span>
+                {% if applicable_offer and original_price != 0 %}
+                  <!-- Display offer details -->
+                  <div class="offer-details" style="margin-top: 10px; font-family: 'Jost', sans-serif; color: #e74c3c; font-size: 1.1rem;">
+                    <span>{{ applicable_offer.type }}: {{ applicable_offer.discount_percentage }}% Off</span>
+                    <span style="font-size: 0.9rem; color: #0c9a1a; display: block;">
+                      You Save: ₹{{ savings|floatformat:2 }}
+                    </span>
+                    {% if both_offers_available %}
+                      <span style="font-size: 0.9rem; color: #4a4a4a; display: block;">
+                        (Largest discount applied)
+                      </span>
+                    {% endif %}
+                    <span style="font-size: 0.9rem; color: #4a4a4a;">
+                      Valid from {{ applicable_offer.valid_from|date:"M d, Y" }} to {{ applicable_offer.valid_until|date:"M d, Y" }}
+                    </span>
+                    <div class="offer-timer" style="font-size: 0.9rem; color: #e74c3c; margin-top: 5px;"></div>
+                  </div>
+                  <script>
+                    const endDate = new Date('{{ applicable_offer.valid_until|date:"c" }}');
+                    const offerTimer = document.querySelector('.offer-timer');
+
+                    function updateTimer() {
+                      const now = new Date();
+                      const timeLeft = endDate - now;
+                      if (timeLeft <= 0) {
+                        offerTimer.innerHTML = 'Offer Expired';
+                        return;
+                      }
+                      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                      offerTimer.innerHTML = `Offer Ends In: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+                    }
+                    setInterval(updateTimer, 1000);
+                    updateTimer();
+                  </script>
+                {% endif %}
+              </div>
+              <div class="product__details--info__desc__wrapper">
+                <div class="product__details--info__desc__header">Product Details</div>
+                <p class="product__details--info__desc">{{ product.product.description }}</p>
+                
+              </div>
+             <h4 style="color: #088a3e;">Available stock:</h4>
+{% for size in size %}
+    {% if size.stock > 0 %}
+        <p style="color: #1a1a1a;">{{ size.size }}: {{ size.stock }}</p>
+    {% else %}
+        <p style="color: red;">{{ size.size }}: Out of stock</p>
+    {% endif %}
+{% endfor %}
+
+
+              <!-- Variant Selection -->
+              {% if variants %}
+              <!-- Variant Selection -->
+
+<div class="variant__selection">
+  <div class="variant__size">
+    <h4 class="variant__selection__title">Size:</h4>
+    <div class="variant__options" id="variant-size-options">
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <style>
+          .size-radio {
+            display: none;
+          }
+
+          .variant__option--size {
+            display: inline-block;
+            padding: 5px 10px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            background-color: white;
+            color: black;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+          }
+
+          .size-radio:checked + .variant__option--size {
+            background-color: black;
+            color: white;
+            border-color: black;
+          }
+
+          .variant__option--size.disabled {
+            background-color: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+            border-color: #ddd;
+          }
+        </style>
+
+        {% for size in size %}
+        <input
+          type="radio"
+          name="size"
+          id="size-{{ forloop.counter }}"
+          value="{{ size.id }}"
+          class="size-radio"
+          data-size-id="{{ size.id }}"
+          data-stock="{{ size.stock }}"
+          {% if size.stock < 1 %}disabled{% endif %}
+          {% if forloop.first and size.stock >= 1 %}checked{% endif %}
+          onclick="selectVariant('size', '{{ size.id }}')"
+        >
+        <label
+          for="size-{{ forloop.counter }}"
+          class="variant__option--size {% if forloop.first and size.stock >= 1 %}active{% endif %} {% if size.stock < 1 %}disabled{% endif %}"
+          data-size-id="{{ size.id }}"
+          data-tooltip="{{ size.size }}"
+        >
+          {{ size.size }}
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+    <!-- Container for the out-of-stock message -->
+    <div id="stock-message" style="margin-top: 10px; font-family: 'Jost', sans-serif; font-size: 1rem;"></div>
+  </div>
+  <div class="variant__color">
+    <h4 class="variant__selection__title">Color:</h4>
+    <div class="variant__options" id="variant-color-options">
+      {% for variant in variants %}
+      <a href="{% url 'product_details' variant.id %}">
+        <button class="variant__option--color {% if variant.id == product.id %}active{% endif %}" style="background-color: {{ variant.color|lower }};" data-variant-id="{{ variant.id }}" data-tooltip="{{ variant.color }}" onclick="selectVariant('color', '{{ variant.color }}', '{{ variant.id }}')"></button>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% else %}
+<p style="font-size: 1rem; color: #777; font-family: 'Jost', sans-serif;">No variants available for this product.</p>
+{% endif %}
+
+<!-- Action Buttons -->
+<div class="product__actions">
+  {% if variants %}
+  <form id="add-to-cart-form" method="POST" action="{% url 'add_to_cart' product.id %}">
+      {% csrf_token %}
+      <input type="hidden" name="size_id" id="size_id" value="">
+      <button type="submit" class="action__btn add-to-cart">Add to Cart</button>
+  </form>
+  <form id="add-to-wishlist-form" method="POST" action="{% url 'add_to_wishlist' product.id %}">
+      {% csrf_token %}
+      <input type="hidden" name="size_id" id="wishlist_size_id" value="">
+      <button type="submit" class="action__btn add-to-wishlist">Add to Wishlist</button>
+  </form>
+  {% else %}
+  <p style="font-size: 1rem; color: #777; font-family: 'Jost', sans-serif;">No variants available for this product.</p>
+  {% endif %}
+</div>
+              <!-- Review section -->
+              <div class="review__section">
+                <h3>Customer Reviews</h3>
+                <div class="review__grid">
+                  <div class="review__card">
+                    <div class="review__rating">
+                      <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">☆</span>
+                    </div>
+                    <div class="review__author">John Doe</div>
+                    <div class="review__date">April 15, 2025</div>
+                    <p class="review__comment">Great product, super quality! Shipping was a bit slow, but worth it.</p>
+                  </div>
+                  <div class="review__card">
+                    <div class="review__rating">
+                      <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+                    </div>
+                    <div class="review__author">Sarah Smith</div>
+                    <div class="review__date">April 10, 2025</div>
+                    <p class="review__comment">Absolutely love it! Stylish and comfy, best buy ever!</p>
+                  </div>
+                  <div class="review__card">
+                    <div class="review__rating">
+                      <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">☆</span><span class="star">☆</span>
+                    </div>
+                    <div class="review__author">Mike Johnson</div>
+                    <div class="review__date">April 5, 2025</div>
+                    <p class="review__comment">Okay product, but material could be better for the price.</p>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End product details section -->
+  </main>
+  <!-- Scroll top bar -->
+  <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
+  <!-- All Script JS Plugins here -->
+  <script src="{% static 'assets/js/vendor/popper.js' %}" defer="defer"></script>
+  <script src="{% static 'assets/js/vendor/bootstrap.min.js' %}" defer="defer"></script>
+  <script src="{% static 'assets/js/plugins/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'assets/js/plugins/glightbox.min.js' %}"></script>
+  <script src="{% static 'assets/js/script.js' %}"></script>
+  <script>
+    var swiper = new Swiper('.product__media--preview', {
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      thumbs: {
+        swiper: new Swiper('.product__media--nav', {
+          slidesPerView: 4,
+          spaceBetween: 10,
+          freeMode: true,
+          watchSlidesProgress: true,
+        }),
+      },
+    });
+    const lightbox = GLightbox({ selector: '.glightbox' });
+  </script>
+
+  <script>
+let selectedSizeId = '';
+
+function selectVariant(type, value, variantId) {
+    if (type === 'size') {
+        selectedSizeId = value; // Value is the size_id
+        // Update the hidden inputs in both forms
+        document.getElementById('size_id').value = selectedSizeId;
+        document.getElementById('wishlist_size_id').value = selectedSizeId;
+
+        // Debug log to confirm the selection
+        console.log('Selected size ID:', selectedSizeId);
+
+        // Update size swatches
+        document.querySelectorAll('#variant-size-options .variant__option--size').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('data-size-id') === value) {
+                btn.classList.add('active');
+            }
+        });
+
+        // Check stock and update Add to Cart button and stock message
+        const selectedSizeInput = document.querySelector(`#variant-size-options .size-radio[value="${value}"]`);
+        const stock = parseInt(selectedSizeInput.getAttribute('data-stock'));
+        const addToCartButton = document.querySelector('#add-to-cart-form .add-to-cart');
+        const stockMessage = document.getElementById('stock-message');
+        
+        if (stock < 1) {
+            addToCartButton.disabled = true;
+            addToCartButton.title = "This size is out of stock";
+            addToCartButton.style.opacity = '0.5';
+            addToCartButton.style.cursor = 'not-allowed';
+            stockMessage.innerHTML = '<span style="color: red;">This size is out of stock.</span>';
+        } else {
+            addToCartButton.disabled = false;
+            addToCartButton.title = "";
+            addToCartButton.style.opacity = '1';
+            addToCartButton.style.cursor = 'pointer';
+            stockMessage.innerHTML = `<span style="color: green;">${stock} units available.</span>`;
+        }
+    } else if (type === 'color') {
+        // Redirect to the selected variant's product detail page
+        window.location.href = `/product-details/${variantId}/`;
+    }
+}
+
+// Ensure an in-stock size is selected on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Find the first in-stock size
+    const sizeInputs = document.querySelectorAll('#variant-size-options .size-radio');
+    let firstInStockInput = null;
+
+    sizeInputs.forEach(input => {
+        const stock = parseInt(input.getAttribute('data-stock'));
+        if (stock >= 1 && !firstInStockInput) {
+            firstInStockInput = input;
+        }
+    });
+
+    // If an in-stock size exists, select it; otherwise, select the first size (which will be out of stock)
+    if (firstInStockInput) {
+        firstInStockInput.checked = true;
+        const sizeId = firstInStockInput.value;
+        selectVariant('size', sizeId); // Update UI, form inputs, and button state
+    } else {
+        // If all sizes are out of stock, use the first size (already checked by default) and update the UI
+        const firstSizeInput = document.querySelector('#variant-size-options .size-radio');
+        if (firstSizeInput) {
+            const sizeId = firstSizeInput.value;
+            selectVariant('size', sizeId);
+        } else {
+            // No sizes available, disable the button and show a message
+            const addToCartButton = document.querySelector('#add-to-cart-form .add-to-cart');
+            const stockMessage = document.getElementById('stock-message');
+            addToCartButton.disabled = true;
+            addToCartButton.title = "No sizes available";
+            addToCartButton.style.opacity = '0.5';
+            addToCartButton.style.cursor = 'not-allowed';
+            stockMessage.innerHTML = '<span style="color: red;">No sizes available for this product.</span>';
+        }
+    }
+
+    // Highlight the current color variant
+    document.querySelectorAll('#variant-color-options .variant__option--color').forEach(btn => {
+        if (btn.classList.contains('active')) {
+            btn.classList.add('active');
+        }
+    });
+
+    // Debug form submission to ensure the correct size_id is sent
+    document.getElementById('add-to-cart-form').addEventListener('submit', (event) => {
+        const sizeId = document.getElementById('size_id').value;
+        console.log('Submitting Add to Cart form with size_id:', sizeId);
+    });
+});
+</script>
+</body>
+</html>

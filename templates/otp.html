@@ -1,0 +1,243 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .login__section {
+            padding: 2rem 0;
+            width: 100%;
+        }
+        .login__section--inner {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .account__login--header__title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .account__login--header__desc {
+            font-size: 1rem;
+            color: #666;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .account__login--input {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        .account__login--input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+            outline: none;
+        }
+        .account__login--btn {
+            background: linear-gradient(90deg, #EB3349, #bf4553);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-weight: 500;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .account__login--btn:hover {
+            background: linear-gradient(90deg, #c6283c, #a23c47);
+            transform: translateY(-2px);
+        }
+        .resend-btn {
+            background: none;
+            border: none;
+            color: #007bff;
+            font-weight: 500;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .resend-btn:disabled {
+            color: #999;
+            cursor: not-allowed;
+            text-decoration: none;
+        }
+        .error {
+            color: red;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .success {
+            color: green;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login__section section--padding">
+        <div class="container">
+            <div class="login__section--inner">
+                <form method="post" action="{% url 'verify_otp' %}">
+                    {% csrf_token %}
+                    <h2 class="account__login--header__title mb-10">Verify OTP</h2>
+                    <p class="account__login--header__desc">An OTP has been sent to {{ email }}</p>
+                    {% if error %}
+                        <p class="error">{{ error }}</p>
+                    {% endif %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</p>
+                        {% endfor %}
+                    {% endif %}
+                    <div id="otp-status" class="success" style="display: none;"></div>
+                    <input class="account__login--input" placeholder="Enter OTP" type="text" name="otp" required>
+                    <button class="account__login--btn primary__btn" type="submit">Verify</button>
+                    <p class="account__login--header__desc">Time remaining: <span id="timer">60</span> seconds</p>
+                    <button type="button" id="resend-btn" class="resend-btn" disabled>Resend OTP</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Safely initialize the timer
+        let regExpiresAt = {{ reg_otp_expires_at|default:"0" }};
+        let forgotExpiresAt = {{ otp_expires_at|default:"0" }};
+        let currentTime = Math.floor(Date.now() / 1000);
+        let timeLeft = 0;
+
+        if (regExpiresAt > 0) {
+            timeLeft = regExpiresAt - currentTime;
+        } else if (forgotExpiresAt > 0) {
+            timeLeft = forgotExpiresAt - currentTime;
+        } else {
+            timeLeft = 60; // Default to 60 seconds if no expiration time
+        }
+
+        if (timeLeft < 0) timeLeft = 0;
+
+        console.log('reg_otp_expires_at:', regExpiresAt);
+        console.log('otp_expires_at:', forgotExpiresAt);
+        console.log('Initial timeLeft:', timeLeft);
+
+        const timer = document.getElementById('timer');
+        const resendBtn = document.getElementById('resend-btn');
+        const otpStatus = document.getElementById('otp-status');
+
+        function updateTimer() {
+            timer.textContent = timeLeft > 0 ? timeLeft : '0';
+            if (timeLeft > 0) {
+                timeLeft--;
+                setTimeout(updateTimer, 1000);
+            } else {
+                resendBtn.disabled = false;
+                console.log('Timer expired');
+            }
+        }
+
+        if (timeLeft > 0) {
+            updateTimer();
+        } else {
+            resendBtn.disabled = false;
+            timer.textContent = '0';
+        }
+
+        resendBtn.addEventListener('click', function() {
+            // Get CSRF token from cookie
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            const csrftoken = getCookie('csrftoken');
+
+            // Show loading in button
+            resendBtn.disabled = true;
+            resendBtn.textContent = 'Sending...';
+
+            fetch('{% url "resend_otp" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({}),
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Display status message
+                otpStatus.textContent = data.message;
+                otpStatus.style.display = 'block';
+                otpStatus.className = data.success ? 'success' : 'error';
+
+                if (data.success) {
+                    // Reset the timer
+                    timeLeft = 60;
+                    resendBtn.disabled = true;
+                    updateTimer();
+                } else {
+                    resendBtn.disabled = false;
+                }
+
+                // Reset button text
+                resendBtn.textContent = 'Resend OTP';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                otpStatus.textContent = 'Failed to resend OTP. Please try again.';
+                otpStatus.style.display = 'block';
+                otpStatus.className = 'error';
+                resendBtn.disabled = false;
+                resendBtn.textContent = 'Resend OTP';
+            });
+        });
+    </script>
+</body>
+</html>

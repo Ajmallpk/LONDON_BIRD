@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .login__section {
+            padding: 4rem 0;
+        }
+        .login__section--inner {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .account__login--header__title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+        }
+        .account__login--input {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        .account__login--input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+            outline: none;
+        }
+        .account__login--btn {
+            background: linear-gradient(90deg, #EB3349, #bf4553);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-weight: 500;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .account__login--btn:hover {
+            background: linear-gradient(90deg, #c6283c, #a23c47);
+            transform: translateY(-2px);
+        }
+        .account__login--signup__text {
+            text-align: center;
+            color: #666;
+            margin: 1rem 0;
+        }
+        .account__login--signup__text a {
+            color: #007bff;
+            font-weight: 500;
+        }
+        .error {
+            color: red;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .success {
+            color: green;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+</head>
+<body>
+    <div class="login__section section--padding">
+        <div class="container">
+            <div class="login__section--inner">
+                <form method="post" action="{% url 'forgot_password' %}">
+                    {% csrf_token %}
+                    <h2 class="account__login--header__title mb-10">Forgot Password</h2>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p class="{% if message.tags == 'success' %}success{% else %}error{% endif %}">{{ message }}</p>
+                        {% endfor %}
+                    {% endif %}
+                    <input class="account__login--input" placeholder="Enter your email" type="email" name="email" required>
+                    <button class="account__login--btn primary__btn" type="submit">Send OTP</button>
+                    <p class="account__login--signup__text"><a href="{% url 'login' %}">Back to Login</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,394 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suruchi - Add Money</title>
+    
+    <!-- ======= All CSS Plugins ======== -->
+    <link rel="stylesheet" href="{% static 'assets/css/plugins/swiper-bundle.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/plugins/glightbox.min.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/vendor/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+    <!-- Custom Style CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            margin: 0 auto;
+        }
+        
+        .wallet-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            color: white;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .balance {
+            font-size: 24px;
+            color: #4facfe;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+        
+        .amount-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .amount-btn {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .amount-btn:hover {
+            border-color: #4facfe;
+            background: #f8f9fa;
+        }
+        
+        .amount-btn.selected {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
+        }
+        
+        .add-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .add-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .add-btn:active {
+            transform: translateY(0);
+        }
+        
+        .cancel-btn {
+            width: 100%;
+            padding: 15px;
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-bottom: 10px;
+        }
+        
+        .cancel-btn:hover {
+            transform: translateY(-2px);
+            background: #d0d0d0;
+        }
+        
+        .cancel-btn:active {
+            transform: translateY(0);
+        }
+        
+        .footer__section {
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Start Preloader -->
+    <div id="preloader">
+        <div id="ctn-preloader" class="ctn-preloader">
+            <div class="animation-preloader">
+                <div class="spinner"></div>
+                <div class="txt-loading">
+                    <span data-text-preloader="L" class="letters-loading">L</span>
+                    <span data-text-preloader="O" class="letters-loading">O</span>
+                    <span data-text-preloader="A" class="letters-loading">A</span>
+                    <span data-text-preloader="D" class="letters-loading">D</span>
+                    <span data-text-preloader="I" class="letters-loading">I</span>
+                    <span data-text-preloader="N" class="letters-loading">N</span>
+                    <span data-text-preloader="G" class="letters-loading">G</span>
+                </div>
+            </div>    
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
+        </div>
+    </div>
+    <!-- End Preloader -->
+
+    <!-- Start Header Area -->
+    <header class="header__section">
+        <div class="main__header header__sticky">
+            <div class="container-fluid">
+                <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
+                    <div class="offcanvas__header--menu__open">
+                        <a class="offcanvas__header--menu__open--btn" href="javascript:void(0)" data-offcanvas>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon offcanvas__header--menu__open--svg" viewBox="0 0 512 512">
+                                <path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M80 160h352M80 256h352M80 352h352"/>
+                            </svg>
+                            <span class="visually-hidden">Menu Open</span>
+                        </a>
+                    </div>
+                    <div class="main__logo">
+                        <h1>LONDON BIRD</h1>
+                    </div>
+                    <div class="header__search--widget header__sticky--none d-none d-lg-block">
+                        <form class="d-flex header__search--form" action="#"></form>
+                    </div>
+                    <div class="header__menu d-none header__sticky--block d-lg-block">
+                        <nav class="header__menu--navigation">
+                            <ul class="d-flex">
+                                <li class="header__menu--items style2">
+                                    <a class="header__menu--link" href="{% url 'index' %}">Home</a>                                  
+                                </li>
+                                <li class="header__menu--items mega__menu--items style2">
+                                    <a class="header__menu--link" href="{% url 'shop' %}">Shop</a>                                 
+                                </li>                                                                                                                                                                                      
+                                <li class="header__menu--items style2">
+                                    <a class="header__menu--link" href="contact.html">Contact</a>  
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="header__account header__account2 header__sticky--block">
+                        <ul class="d-flex">
+                            <li class="header__account--items header__account2--items">
+                                <a class="header__account--btn" href="{% url 'user_profile' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 512 512">
+                                        <path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+                                        <path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+                                    </svg>
+                                    <span class="visually-hidden">My Account</span>
+                                </a>
+                            </li>
+                            <li class="header__account--items header__account2--items d-none d-lg-block">
+                                <a class="header__account--btn" href="wishlist.html">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28.51" height="23.443" viewBox="0 0 512 512">
+                                        <path d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+                                    </svg>
+                                    <span class="items__count wishlist style2">02</span> 
+                                </a>
+                            </li>
+                            <li class="header__account--items header__account2--items">
+                                <a class="header__account--btn minicart__open--btn" href="javascript:void(0)" data-offcanvas>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 14.706 13.534">
+                                        <g transform="translate(0 0)">
+                                            <g>
+                                                <path data-name="Path 16787" d="M4.738,472.271h7.814a.434.434,0,0,0,.414-.328l1.723-6.316a.466.466,0,0,0-.071-.4.424.424,0,0,0-.344-.179H3.745L3.437,463.6a.435.435,0,0,0-.421-.353H.431a.451.451,0,0,0,0,.9h2.24c.054.257,1.474,6.946,1.555,7.33a1.36,1.36,0,0,0-.779,1.242,1.326,1.326,0,0,0,1.293,1.354h7.812a.452.452,0,0,0,0-.9H4.74a.451.451,0,0,1,0-.9Zm8.966-6.317-1.477,5.414H5.085l-1.149-5.414Z" transform="translate(0 -463.248)" fill="currentColor"/>
+                                                <path data-name="Path 16788" d="M5.5,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,5.5,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,6.793,478.352Z" transform="translate(-1.191 -466.622)" fill="currentColor"/>
+                                                <path data-name="Path 16789" d="M10.5,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,10.5,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,11.793,478.352Z" transform="translate(-2.39 -466.622)" fill="currentColor"/>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    <span class="items__count style2">03</span>
+                                    <span class="visually-hidden">Cart</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- End Header Area -->
+
+    <div class="container">
+        <div class="wallet-icon">💰</div>
+        <h1>Add Money</h1>
+        <div class="balance" id="currentBalance">Balance: ₹{{ wallet.balance|floatformat:2 }}</div>
+        
+<form id="addMoneyForm" method="POST" action="{% url 'add_money' %}">
+    {% csrf_token %}
+    
+    <div class="form-group">
+        <label>Quick Amounts</label>
+        <div class="amount-buttons">
+            <button type="button" class="amount-btn" data-amount="25">₹25</button>
+            <button type="button" class="amount-btn" data-amount="50">₹50</button>
+            <button type="button" class="amount-btn" data-amount="100">₹100</button>
+            <button type="button" class="amount-btn" data-amount="200">₹200</button>
+            <button type="button" class="amount-btn" data-amount="500">₹500</button>
+            <button type="button" class="amount-btn" data-amount="1000">₹1000</button>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label for="customAmount">Custom Amount</label>
+        <input type="number" id="customAmount" name="amount" placeholder="Enter amount" min="1" step="0.01" required>
+    </div>
+    
+    <a href="{% url 'wallet_page' %}" class="cancel-btn">Cancel</a>
+    <button type="submit" class="add-btn">Add Money</button>
+</form>
+    </div>
+
+    <!-- Start Footer Area -->
+    <footer class="footer__section footer__bg">
+        <div class="container-fluid">
+            <div class="main__footer">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer__widget">
+                            <h2 class="footer__widget--title">About Us</h2>
+                            <div class="footer__widget--inner">
+                                <p class="footer__widget--desc">We are London Bird, your trusted fashion destination.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer__widget">
+                            <h2 class="footer__widget--title">Quick Links</h2>
+                            <ul class="footer__widget--menu">
+                                <li><a href="{% url 'index' %}">Home</a></li>
+                                <li><a href="{% url 'shop' %}">Shop</a></li>
+                                <li><a href="contact.html">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer__widget">
+                            <h2 class="footer__widget--title">Contact Info</h2>
+                            <div class="footer__widget--inner">
+                                <p class="footer__widget--desc">Email: support@londonbird.com</p>
+                                <p class="footer__widget--desc">Phone: +123 456 7890</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer__widget">
+                            <h2 class="footer__widget--title">Follow Us</h2>
+                            <div class="footer__widget--inner">
+                                <ul class="footer__social">
+                                    <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                                    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                    <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__bottom d-flex justify-content-center">
+                <p class="footer__bottom--text">© 2025 London Bird. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <!-- End Footer Area -->
+
+    <!-- Include Necessary Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <script src="{% static 'assets/js/vendor/jquery.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="{% static 'assets/js/vendor/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/swiper-bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/glightbox.min.js' %}"></script>
+    <script src="{% static 'assets/js/script.js' %}"></script>
+
+    <script>
+        let selectedAmount = 0;
+        
+        const customAmountInput = document.getElementById('customAmount');
+        const amountButtons = document.querySelectorAll('.amount-btn');
+        
+        // Handle quick amount button clicks
+        amountButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove selected class from all buttons
+                amountButtons.forEach(b => b.classList.remove('selected'));
+                // Add selected class to clicked button
+                btn.classList.add('selected');
+                // Set the amount in the input field
+                selectedAmount = parseFloat(btn.dataset.amount);
+                customAmountInput.value = selectedAmount;
+            });
+        });
+        
+        // Handle custom amount input
+        customAmountInput.addEventListener('input', () => {
+            // Remove selected class from all buttons
+            amountButtons.forEach(b => b.classList.remove('selected'));
+            selectedAmount = 0;
+        });
+    </script>
+</body>
+</html>

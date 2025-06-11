@@ -1,0 +1,383 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Suruchi - Edit Email</title>
+    <meta name="description" content="Morden Bootstrap HTML5 Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">
+    
+    <!-- ======= All CSS Plugins here ======== -->
+    <link rel="stylesheet" href="{% static 'assets/css/plugins/swiper-bundle.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/plugins/glightbox.min.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Plugin css -->
+    <link rel="stylesheet" href="{% static 'assets/css/vendor/bootstrap.min.css' %}">
+
+    <!-- Custom Style CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+    <!-- Inline CSS for email input styling and messages -->
+    <style>
+        .email__input--form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .email__input--field {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+            font-size: 16px;
+        }
+        .email__input--field:invalid {
+            border-color: #dc3545;
+        }
+        .messages {
+            margin-bottom: 20px;
+        }
+        .alert-message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .verify-btn {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            align-self: flex-start;
+        }
+        .verify-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Start preloader -->
+    <div id="preloader">
+        <div id="ctn-preloader" class="ctn-preloader">
+            <div class="animation-preloader">
+                <div class="spinner"></div>
+                <div class="txt-loading">
+                    <span data-text-preloader="L" class="letters-loading">L</span>
+                    <span data-text-preloader="O" class="letters-loading">O</span>
+                    <span data-text-preloader="A" class="letters-loading">A</span>
+                    <span data-text-preloader="D" class="letters-loading">D</span>
+                    <span data-text-preloader="I" class="letters-loading">I</span>
+                    <span data-text-preloader="N" class="letters-loading">N</span>
+                    <span data-text-preloader="G" class="letters-loading">G</span>
+                </div>
+            </div>    
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
+        </div>
+    </div>
+    <!-- End preloader -->
+
+    <!-- Start header section -->
+        <header class="header__section">
+    <div class="main__header header__sticky">
+      <div class="container-fluid">
+        <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
+          <div class="offcanvas__header--menu__open">
+            <a class="offcanvas__header--menu__open--btn" href="javascript:void(0)" data-offcanvas>
+              <svg xmlns="http://www.w3.org/2000/svg" class="ionicon offcanvas__header--menu__open--svg" viewBox="0 0 512 512">
+                <path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M80 160h352M80 256h352M80 352h352"/>
+              </svg>
+              <span class="visually-hidden">Menu Open</span>
+            </a>
+          </div>
+          <div class="main__logo">
+            <h1>LONDON BIRD</h1>
+          </div>
+          <div class="header__account header__sticky--none">
+            <ul class="d-flex">
+              <li class="header__account--items">
+                <a class="header__account--btn" href="{% url 'user_profile' %}">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 512 512">
+                    <path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+                    <path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+                  </svg>
+                  <span class="header__account--btn__text">My Account</span>
+                </a>
+              </li>
+              <li class="header__account--items d-none d-lg-block">
+                <a class="header__account--btn" href="{% url 'view_wishlist' %}">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28.51" height="23.443" viewBox="0 0 512 512">
+                    <path d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+                  </svg>
+                  <span class="header__account--btn__text"> Wish List</span>
+                  <span class="items__count wishlist">{{ wishlist_items }}</span>
+                </a>
+              </li>
+              <li class="header__account--items">
+                <a class="header__account--btn minicart__open--btn" href="{% url 'cart' %}"  data-offcanvas>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 14.706 13.534">
+                    <g transform="translate(0 0)">
+                      <g>
+                        <path data-name="Path 16787" d="M4.738,472.271h7.814a.434.434,0,0,0,.414-.328l1.723-6.316a.466.466,0,0,0-.071-.4.424.424,0,0,0-.344-.179H3.745L3.437,463.6a.435.435,0,0,0-.421-.353H.431a.451.451,0,0,0,0,.9h2.24c.054.257,1.474,6.946,1.555,7.33a1.36,1.36,0,0,0-.779,1.242,1.326,1.326,0,0,0,1.293,1.354h7.812a.452.452,0,0,0,0-.9H4.74a.451.451,0,0,1,0-.9Zm8.966-6.317-1.477,5.414H5.085l-1.149-5.414Z" transform="translate(0 -463.248)" fill="currentColor"/>
+                        <path data-name="Path 16788" d="M5.5,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,5.5,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,6.793,478.352Z" transform="translate(-1.191 -466.622)" fill="currentColor"/>
+                        <path data-name="Path 16789" d="M13.273,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,13.273,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,14.566,478.352Z" transform="translate(-2.875 -466.622)" fill="currentColor"/>
+                      </g>
+                    </g>
+                  </svg>
+                  <span class="header__account--btn__text"> My cart</span>
+                  <span class="items__count">{{ cart_items }}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="header__bottom">
+      <div class="container-fluid">
+        <div class="header__bottom--inner position__relative d-none d-lg-flex justify-content-between align-items-center">
+          <div class="header__menu">
+            <nav class="header__menu--navigation">
+              <ul class="d-flex">
+                <li class="header__menu--items">
+                  <a class="header__menu--link" href="{% url 'index' %}">Home</a>
+                </li>
+                <li class="header__menu--items">
+                  <a class="header__menu--link" href="{% url 'shop' %}">shop</a>
+                </li>
+                <!-- <li class="header__menu--items">
+                  <a class="header__menu--link" href="contact.html">Contact</a>
+                </li> -->
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+
+  <div class="offcanvas__header">
+            <div class="offcanvas__inner">
+                <div class="offcanvas__logo">
+                    <a class="offcanvas__logo_link" href="{% url 'index' %}">
+                        <h1>LONDON BIRD</h1>
+                    </a>
+                    <button class="offcanvas__close--btn" data-offcanvas>close</button>
+                </div>
+                <nav class="offcanvas__menu">
+                    <ul class="offcanvas__menu_ul">
+                        <li class="offcanvas__menu_li">
+                            <a class="offcanvas__menu_item" href=" ">Home</a>
+                           
+                        </li>
+                        <li class="offcanvas__menu_li">
+                            <a class="offcanvas__menu_item" href="{% url 'shop' %}">Shop</a>
+                            
+                        </li>
+
+
+                        <li class="offcanvas__menu_li">
+                            <a class="offcanvas__menu_item" href="{% url 'view_wishlist' %}">My wishlist</a>
+                            
+                        </li>
+
+                        {% if user.is_authenticated %}
+                        <li class="header__menu--items" style="padding-left: 15px;">
+                            <form method="post" action="{% url 'logout' %}" style="margin: 0; display: inline;">
+                                {% csrf_token %}
+                            <button class="header__menu--link" style="padding-top: 15px; border: none; background: none; outline: none; color: red; font-weight: bold;" href="{% url 'logout' %}">Logout</button>
+                            </form>
+                        </li>
+                        {% else %}
+                        <li class="header__menu--items d-none d-xl-block">
+                            <a class="header__menu--link" href="{% url 'login' %}">login </a>  
+                        </li>
+                        <li class="header__menu--items">
+                            <a class="header__menu--link" href="{% url 'register' %}">register</a>
+                        </li>
+                        {% endif %}
+                        <!-- <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="about.html">About</a></li>
+                        <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="contact.html">Contact</a></li> -->
+                    </ul>
+                    
+                    <!-- <div class="offcanvas__account--items">
+                        <a class="offcanvas__account--items__btn d-flex align-items-center" href="{% url 'login' %}">
+                        <span class="offcanvas__account--items__icon"> 
+                            <svg xmlns="http://www.w3.org/2000/svg"  width="20.51" height="19.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg> 
+                            </span>
+                        <span class="offcanvas__account--items__label">Login / Register</span>
+                        </a>
+                    </div> -->
+                    <div class="language__currency">
+                        
+                    </div>
+                </nav>
+            </div>
+        </div>
+    <!-- End header section -->
+
+    <main class="main__content_wrapper">
+        <!-- Start breadcrumb section -->
+     <section class="breadcrumb__section breadcrumb__bg"
+         style="background-image: url('{% static "assets/img/banner/38150.jpg" %}'); 
+                background-size: cover; 
+                background-position: center; 
+                background-repeat: no-repeat; 
+                width: 100%; 
+                min-height: 200px; 
+                padding: 40px 15px; 
+                display: flex; 
+                align-items: center;">
+    <div class="container" style="width: 100%;">
+        <div class="row row-cols-1">
+            <div class="col">
+                <div class="breadcrumb__content text-center">
+                    <h1 class="breadcrumb__content--title text-white mb-25" style="font-size: 2rem;">Edit profile</h1>
+                    <ul class="breadcrumb__content--menu d-flex justify-content-center" style="gap: 10px; flex-wrap: wrap; list-style: none; padding: 0; margin: 0;">
+                        <li class="breadcrumb__content--menu__items">
+                            <a class="text-white" href="{% url 'index' %}" style="color: white; text-decoration: none;">Home</a>
+                        </li>
+                        <li class="breadcrumb__content--menu__items">
+                            <span class="text-white" style="color: white;">Edit profile</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+        <!-- End breadcrumb section -->
+        
+        <!-- Edit email section start -->
+        <section class="my__account--section section--padding">
+            <div class="container">
+                <div class="my__account--section__inner border-radius-10 d-flex">
+                    <!-- <div class="account__left--sidebar">
+                        <h2 class="account__content--title h3 mb-20">My Profile</h2>
+                        <ul class="account__menu">
+                            <li class="account__menu--list active"><a href="{% url 'user_profile' %}">My Profile</a></li>
+                            <li class="account__menu--list"><a href="{% url 'user_address' %}">My Address</a></li>
+                            <li class="account__menu--list"><a href="{% url 'edit_profile' %}">Edit Profile</a></li> -->
+                            <!-- <li class="account__menu--list"><a href="{% url 'order_list'  %}">My Orders</a></li>
+                            <li class="account__menu--list"><a href="{% url 'wallet_page' %}">My Wallet</a></li>
+                            <li class="account__menu--list"><a href="{% url 'user_available_coupons' %}">Coupons</a></li>
+                            <li  class="account__menu--list"><a href="{% url 'referral_dashboard' %}">View Referral</a></li>
+                            <li class="account__menu--list"><a href="{% url 'logout' %}">Log Out</a></li>
+                        </ul>
+                    </div>  -->
+                    <div class="account__wrapper">
+                        <div class="account__content">
+                            <!-- Messages -->
+                            {% if messages %}
+                                <div class="messages">
+                                    {% for message in messages %}
+                                        <div class="alert-message alert-{{ message.tags }}">{{ message }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <!-- Edit Email Form -->
+                            <h3 class="account__content--title mb-20">Welcome, {{ user.get_full_name|default:user.username }}!</h3>
+                            <form class="email__input--form" method="POST" action="{% url 'edit_email' %}" novalidate>
+                                {% csrf_token %}
+                                <label>
+                                    <input class="email__input--field" type="email" name="currentEmailInput" id="currentEmailInput" 
+                                           placeholder="Enter new Email" required maxlength="254"
+                                           pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                                           title="Please enter a valid email address (e.g., user@example.com) with a maximum of 254 characters.">
+                                </label>
+                                <button type="submit" class="account__details--footer__btn verify-btn">Verify</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Edit email section end -->
+    </main>
+
+    <!-- Start footer section -->
+<footer class="footer__section bg__black">
+        <div class="container-fluid">
+            <div class="main__footer d-flex justify-content-between">
+                <div class="footer__widget footer__widget--width">
+                    <h2 class="footer__widget--title text-ofwhite h3">About Us 
+                        <button class="footer__widget--button" aria-label="footer widget button">
+                            <svg class="footer__widget--title__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12.355" height="8.394" viewBox="0 0 10.355 6.394">
+                                <path  d="M15.138,8.59l-3.961,3.952L7.217,8.59,6,9.807l5.178,5.178,5.178-5.178Z" transform="translate(-6 -8.59)" fill="currentColor"></path>
+                            </svg>
+                        </button>
+                    </h2>
+                    <div class="footer__widget--inner">
+                        <p class="footer__widget--desc text-ofwhite mb-20">Lorem ipsum dolor sit amet, consectetur adipisici ti elit <br> seddo eiusmod tempor incididunt utlabore et dolore <br> magna aliqua  enim ad minim veniam quisnostrud <br> exercitation ullamco</p>
+                        <div class="footer__social">
+                           
+                        </div>
+                    </div>
+                </div>
+                <div class="footer__widget--menu__wrapper d-flex footer__widget--width">
+                    <div class="footer__widget">
+                        
+                    </div>
+                    <div class="footer__widget">
+                        
+                    </div>
+                </div>
+                <div class="footer__widget footer__widget--width">
+                    
+                    <div class="footer__instagram footer__widget--inner">
+                        <div class="footer__instagram--list d-flex">
+                            
+                        </div>
+                        <div class="footer__instagram--list d-flex">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="footer__widget footer__widget--width">
+                   <h1 style="color: #fff;">LB</h1>
+                </div>
+            </div>
+            <div class="footer__bottom d-flex justify-content-between align-items-center">
+                <p class="copyright__content text-ofwhite m-0">Copyright © 2022 <a class="copyright__content--link" href="index.html">Suruchi</a> . All Rights Reserved.Design By Suruchi</p>
+                <div class="footer__payment text-right">
+                    <img class="display-block" src="{% static 'assets/img/other/payment-visa-card.png' %}" alt="visa-card">
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- End footer section -->
+
+    <!-- Scroll top bar -->
+    <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
+
+    <!-- All Script JS Plugins here -->
+    <script src="{% static 'assets/js/vendor/popper.js' %}" defer="defer"></script>
+    <script src="{% static 'assets/js/vendor/bootstrap.min.js' %}" defer="defer"></script>
+    <script src="{% static 'assets/js/plugins/swiper-bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/glightbox.min.js' %}"></script>
+
+    <!-- Customscript js -->
+    <script src="{% static 'assets/js/script.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Unblock</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+        .confirm__section {
+            padding: 2rem 1rem;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .confirm__section--inner {
+            width: 90%;
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            animation: fadeIn 0.5s ease-in;
+            text-align: center;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .account__confirm--header__title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+        .account__confirm--text {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        .account__login--btn {
+            background: linear-gradient(90deg, #28a745, #218838);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            color: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+        .account__login--btn:hover {
+            background: linear-gradient(90deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+        }
+        .cancel-btn {
+            background: #6c757d;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .cancel-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .confirm__section--inner {
+                padding: 1.5rem;
+                width: 95%;
+            }
+            .account__confirm--header__title {
+                font-size: 1.5rem;
+            }
+            .account__confirm--text {
+                font-size: 0.9rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .account__confirm--header__title {
+                font-size: 1.25rem;
+            }
+            .account__confirm--text {
+                font-size: 0.85rem;
+            }
+            .account__login--btn, .cancel-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+                margin-right: 0;
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="confirm__section">
+        <div class="container">
+            <div class="confirm__section--inner">
+                <h2 class="account__confirm--header__title">Confirm Unblock</h2>
+                <p class="account__confirm--text">Are you sure you want to unblock {{ user.username }}?</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="button-group">
+                        <button type="submit" class="account__login--btn">Yes, Unblock</button>
+                        <a href="{% url 'user_management' %}" class="cancel-btn">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

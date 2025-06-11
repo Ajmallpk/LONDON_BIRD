@@ -1,0 +1,592 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Suruchi - Cart</title>
+  <meta name="description" content="Morden Bootstrap HTML5 Template">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/plugins/swiper-bundle.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/plugins/glightbox.min.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'assets/css/vendor/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+  <style>
+    .cart__price--discounted {
+      font-size: 1.2rem;
+      color: #e74c3c;
+      font-weight: 600;
+    }
+    .cart__price--original {
+      font-size: 1rem;
+      color: #777;
+      text-decoration: line-through;
+      margin-left: 5px;
+    }
+    .cart__savings {
+      font-size: 0.9rem;
+      color: #27ae60;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+
+  <!-- Start preloader -->
+  <div id="preloader">
+    <div id="ctn-preloader" class="ctn-preloader">
+      <div class="animation-preloader">
+        <div class="spinner"></div>
+        <div class="txt-loading">
+          <span data-text-preloader="L" class="letters-loading">L</span>
+          <span data-text-preloader="O" class="letters-loading">O</span>
+          <span data-text-preloader="A" class="letters-loading">A</span>
+          <span data-text-preloader="D" class="letters-loading">D</span>
+          <span data-text-preloader="I" class="letters-loading">I</span>
+          <span data-text-preloader="N" class="letters-loading">N</span>
+          <span data-text-preloader="G" class="letters-loading">G</span>
+        </div>
+      </div>
+      <div class="loader-section section-left"></div>
+      <div class="loader-section section-right"></div>
+    </div>
+  </div>
+  <!-- End preloader -->
+
+  <!-- Start header area -->
+  <header class="header__section">
+        <div class="main__header header__sticky">
+            <div class="container-fluid">
+                <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
+                    <div class="offcanvas__header--menu__open">
+                        <a class="offcanvas__header--menu__open--btn" href="javascript:void(0)" data-offcanvas>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon offcanvas__header--menu__open--svg" viewBox="0 0 512 512">
+                                <path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M80 160h352M80 256h352M80 352h352"/>
+                            </svg>
+                            <span class="visually-hidden">Menu Open</span>
+                        </a>
+                    </div>
+                    <div class="main__logo">
+                        <h1>LONDON BIRD</h1>
+                    </div>
+                    <div class="header__account header__sticky--none">
+                        <ul class="d-flex">
+                            <li class="header__account--items">
+                                {% if user.is_authenticated %}
+                                <a class="header__account--btn" href="{% url 'user_profile' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg"  width="26.51" height="23.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg> 
+                                    <span class="header__account--btn__text">My Account</span>
+                                </a>
+                                {% endif %}
+                            </li>
+                            <li class="header__account--items d-none d-lg-block">
+                                <a class="header__account--btn" href="{% url 'view_wishlist' %}">
+                                    <svg  xmlns="http://www.w3.org/2000/svg" width="28.51" height="23.443" viewBox="0 0 512 512"><path d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></path></svg>
+                                    <span class="header__account--btn__text" > Wish List</span>
+                                    <span class="items__count wishlist">{{ wishlist_items }}</span> 
+                                </a>
+                            </li>
+                            <!-- <li class="header__account--items">
+                                <a class="header__account--btn minicart__open--btn" href="{% url 'cart' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 14.706 13.534">
+                                        <g  transform="translate(0 0)">
+                                          <g >
+                                            <path  data-name="Path 16787" d="M4.738,472.271h7.814a.434.434,0,0,0,.414-.328l1.723-6.316a.466.466,0,0,0-.071-.4.424.424,0,0,0-.344-.179H3.745L3.437,463.6a.435.435,0,0,0-.421-.353H.431a.451.451,0,0,0,0,.9h2.24c.054.257,1.474,6.946,1.555,7.33a1.36,1.36,0,0,0-.779,1.242,1.326,1.326,0,0,0,1.293,1.354h7.812a.452.452,0,0,0,0-.9H4.74a.451.451,0,0,1,0-.9Zm8.966-6.317-1.477,5.414H5.085l-1.149-5.414Z" transform="translate(0 -463.248)" fill="currentColor"/>
+                                            <path  data-name="Path 16788" d="M5.5,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,5.5,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,6.793,478.352Z" transform="translate(-1.191 -466.622)" fill="currentColor"/>
+                                            <path  data-name="Path 16789" d="M13.273,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,13.273,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,14.566,478.352Z" transform="translate(-2.875 -466.622)" fill="currentColor"/>
+                                          </g>
+                                        </g>
+                                    </svg>
+                                  <span class="header__account--btn__text">My cart</span>   
+                                    <span class="items__count">{{ cart_items }}</span> 
+                                </a>
+                            </li> -->
+                        </ul>
+                    </div>
+                    <div class="header__menu d-none header__sticky--block d-lg-block">
+                        <nav class="header__menu--navigation">
+                            <ul class="d-flex">
+                                <!-- <li class="header__menu--items style2">
+                                    <a class="header__menu--link" href="{% url 'index' %}">Home</a>                                  
+                                </li>
+                                <li class="header__menu--items mega__menu--items style2">
+                                    <a class="header__menu--link" href="{% url 'shop' %}">Shop</a>                                 
+                                </li>                                                                                                                                                                                       -->
+                                <!-- <li class="header__menu--items style2">
+                                    <a class="header__menu--link" href="contact.html">Contact</a>  
+                                </li> -->
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="header__account header__account2 header__sticky--block">
+                        <ul class="d-flex">
+                            <li class="header__account--items header__account2--items">
+                                <a class="header__account--btn" href="{% url 'user_profile' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 512 512">
+                                        <path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+                                        <path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
+                                    </svg>
+                                    <span class="visually-hidden">My Account</span>
+                                </a>
+                            </li>
+                            <li class="header__account--items header__account2--items d-none d-lg-block">
+                                <a class="header__account--btn" href="{% url 'view_wishlist' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28.51" height="23.443" viewBox="0 0 512 512">
+                                        <path d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+                                    </svg>
+                                    <span class="items__count wishlist style2">{{ wishlist_items }}</span> 
+                                </a>
+                            </li>
+                            <!-- <li class="header__account--items header__account2--items">
+                                <a class="header__account--btn minicart__open--btn" href="{% url 'cart' %}" >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443" viewBox="0 0 14.706 13.534">
+                                        <g transform="translate(0 0)">
+                                            <g>
+                                                <path data-name="Path 16787" d="M4.738,472.271h7.814a.434.434,0,0,0,.414-.328l1.723-6.316a.466.466,0,0,0-.071-.4.424.424,0,0,0-.344-.179H3.745L3.437,463.6a.435.435,0,0,0-.421-.353H.431a.451.451,0,0,0,0,.9h2.24c.054.257,1.474,6.946,1.555,7.33a1.36,1.36,0,0,0-.779,1.242,1.326,1.326,0,0,0,1.293,1.354h7.812a.452.452,0,0,0,0-.9H4.74a.451.451,0,0,1,0-.9Zm8.966-6.317-1.477,5.414H5.085l-1.149-5.414Z" transform="translate(0 -463.248)" fill="currentColor"/>
+                                                <path data-name="Path 16788" d="M5.5,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,5.5,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,6.793,478.352Z" transform="translate(-1.191 -466.622)" fill="currentColor"/>
+                                                <path data-name="Path 16789" d="M13.273,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,13.273,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,14.566,478.352Z" transform="translate(-2.875 -466.622)" fill="currentColor"/>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    <span class="items__count style2">{{ cart_items }}</span> 
+                                </a>
+                            </li> -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="offcanvas__header">
+            <div class="offcanvas__inner">
+                <div class="offcanvas__logo">
+                    <a class="offcanvas__logo_link" href="{% url 'index' %}">
+                        <h1>LONDON BIRD</h1>
+                    </a>
+                    <button class="offcanvas__close--btn" data-offcanvas>close</button>
+                </div>
+                <nav class="offcanvas__menu">
+                    <ul class="offcanvas__menu_ul">
+                        <li class="offcanvas__menu_li">
+                            <a class="offcanvas__menu_item" href=" ">Home</a>
+                           
+                        </li>
+                        <li class="offcanvas__menu_li">
+                            <a class="offcanvas__menu_item" href="{% url 'shop' %}">Shop</a>
+                            
+                        </li>
+
+
+                        <li class="offcanvas__menu_li">
+                            <a class="offcanvas__menu_item" href="{% url 'view_wishlist' %}">My wishlist</a>
+                            
+                        </li>
+
+                        {% if user.is_authenticated %}
+                        <li class="header__menu--items" style="padding-left: 15px;">
+                            <form method="post" action="{% url 'logout' %}" style="margin: 0; display: inline;">
+                                {% csrf_token %}
+                            <button class="header__menu--link" style="padding-top: 15px; border: none; background: none; outline: none; color: red; font-weight: bold;" href="{% url 'logout' %}">Logout</button>
+                            </form>
+                        </li>
+                        {% else %}
+                        <li class="header__menu--items d-none d-xl-block">
+                            <a class="header__menu--link" href="{% url 'login' %}">login </a>  
+                        </li>
+                        <li class="header__menu--items">
+                            <a class="header__menu--link" href="{% url 'register' %}">register</a>
+                        </li>
+                        {% endif %}
+                        <!-- <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="about.html">About</a></li>
+                        <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="contact.html">Contact</a></li> -->
+                    </ul>
+                    
+                    <!-- <div class="offcanvas__account--items">
+                        <a class="offcanvas__account--items__btn d-flex align-items-center" href="{% url 'login' %}">
+                        <span class="offcanvas__account--items__icon"> 
+                            <svg xmlns="http://www.w3.org/2000/svg"  width="20.51" height="19.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg> 
+                            </span>
+                        <span class="offcanvas__account--items__label">Login / Register</span>
+                        </a>
+                    </div> -->
+                    <div class="language__currency">
+                        
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <div class="header__bottom">
+            <div class="container-fluid">
+                <div class="header__bottom--inner position__relative d-none d-lg-flex justify-content-between align-items-center">
+                    <div class="header__menu">
+                        <nav class="header__menu--navigation">
+                            <ul class="d-flex">
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="{% url 'index' %}">Home</a>
+                                </li>
+                                <li class="header__menu--items mega__menu--items">
+                                    <a class="header__menu--link" href="shop.html">Shop</a>
+                                </li>
+                                <!-- <li class="header__menu--items">
+                                    <a class="header__menu--link" href="about.html">About US</a>  
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="contact.html">Contact</a>  
+                                </li> -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+  
+  <!-- End header area -->
+
+  <main class="main__content_wrapper">
+    <!-- Start breadcrumb section -->
+     <section class="breadcrumb__section breadcrumb__bg"
+         style="background-image: url('{% static "assets/img/banner/38150.jpg" %}'); 
+                background-size: cover; 
+                background-position: center; 
+                background-repeat: no-repeat; 
+                width: 100%; 
+                min-height: 200px; 
+                padding: 40px 15px; 
+                display: flex; 
+                align-items: center;">
+    <div class="container" style="width: 100%;">
+        <div class="row row-cols-1">
+            <div class="col">
+                <div class="breadcrumb__content text-center">
+                    <h1 class="breadcrumb__content--title text-white mb-25" style="font-size: 2rem;">My Profile</h1>
+                    <ul class="breadcrumb__content--menu d-flex justify-content-center" style="gap: 10px; flex-wrap: wrap; list-style: none; padding: 0; margin: 0;">
+                        <li class="breadcrumb__content--menu__items">
+                            <a class="text-white" href="{% url 'index' %}" style="color: white; text-decoration: none;">Home</a>
+                        </li>
+                        <li class="breadcrumb__content--menu__items">
+                            <span class="text-white" style="color: white;">cart</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    <!-- End breadcrumb section -->
+     {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} text-center" role="alert" style="margin: 15px;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+    <!-- cart section start -->
+    <section class="cart__section section--padding">
+      <div class="container-fluid">
+        <div class="cart__section--inner">
+          <form action="#">
+            <h2 class="cart__title mb-40">Shopping Cart</h2>
+            {% if cart_items %}
+            <div class="row">
+              <div class="col-lg-8">
+                <div class="cart__table">
+                  <table class="cart__table--inner">
+                    <thead class="cart__table--header">
+                      <tr class="cart__table--header__items">
+                        <th class="cart__table--header__list">Product</th>
+                        <th class="cart__table--header__list">Price</th>
+                        <th class="cart__table--header__list">Quantity</th>
+                        <th class="cart__table--header__list">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody class="cart__table--body">
+                      {% for item in cart_items %}
+                      <tr class="cart__table--body__items">
+                        <td class="cart__table--body__list">
+                          <div class="cart__product d-flex align-items-center">
+                            <a href="{% url 'remove_from_cart' item.id %}" class="cart__remove--btn" aria-label="remove button">
+                              <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16px" height="16px">
+                                <path d="M 4.7070312 3.2929688 L 3.2929688 4.7070312 L 10.585938 12 L 3.2929688 19.292969 L 4.7070312 20.707031 L 12 13.414062 L 19.292969 20.707031 L 20.707031 19.292969 L 13.414062 12 L 20.707031 4.7070312 L 19.292969 3.2929688 L 12 10.585938 L 4.7070312 3.2929688 z"/>
+                              </svg>
+                            </a>
+                            <div class="cart__thumbnail">
+                              <a href="{% url 'product_details' item.variant.id %}">
+                                <img class="border-radius-5" src="{{ item.variant.image_main.url|default:'/media/placeholder.jpg' }}" alt="cart-product">
+                              </a>
+                            </div>
+                            <div class="cart__content">
+                              <h4 class="cart__content--title"><a href="{% url 'product_details' item.variant.id %}">{{ item.variant.product.name }}</a></h4>
+                              <span class="cart__content--variant">COLOR: {{ item.variant.color }}</span>
+                              <span class="cart__content--variant">SIZE: {{ item.size.size }}</span>
+                              {% if item.size.stock == 0 %}
+                              <span class="cart__content--variant text-danger">Out of Stock</span>
+                              {% endif %}
+                            </div>
+                          </div>
+                        </td>
+                        <!-- Price -->
+<td class="cart__table--body__list">
+  <!-- Label for small screens -->
+  <span class="d-block d-lg-none mb-1 text-muted" style="font-size: 0.85rem;">Price</span>
+
+  <span class="cart__price">
+    <span class="cart__price--discounted">₹{{ item.get_discounted_price|floatformat:2 }}</span>
+    {% if item.get_discounted_price != item.get_original_price %}
+    <span class="cart__price--original">₹{{ item.get_original_price|floatformat:2 }}</span>
+    {% endif %}
+  </span>
+</td>
+
+<!-- Quantity (unchanged) -->
+<td class="cart__table--body__list">
+  <div class="quantity__box">
+    <button type="button" class="quantity__value quickview__value--quantity decrease" data-item-id="{{ item.id }}" aria-label="quantity value" value="Decrease Value">-</button>
+    <label>
+      <input type="number" class="quantity__number quickview__value--number" value="{{ item.quantity }}" data-counter readonly/>
+    </label>
+    <button type="button" class="quantity__value quickview__value--quantity increase" data-item-id="{{ item.id }}" aria-label="quantity value" value="Increase Value" {% if item.size.stock == 0 %}disabled{% endif %}>+</button>
+  </div>
+</td>
+
+<!-- Total -->
+<td class="cart__table--body__list">
+  <!-- Label for small screens -->
+  <span class="d-block d-lg-none mb-1 text-muted" style="font-size: 0.85rem;">Total</span>
+
+  <span class="cart__price end" style="display: inline-flex; flex-direction: column; gap: 4px;">
+    <span class="cart__price--discounted">₹{{ item.get_total_discounted_price|floatformat:2 }}</span>
+    {% if item.get_total_discounted_price != item.get_total_original_price %}
+    <span class="cart__price--original">₹{{ item.get_total_original_price|floatformat:2 }}</span>
+    <div class="cart__savings">You Save: ₹{{ item.get_savings|floatformat:2 }}</div>
+    {% endif %}
+  </span>
+</td>
+
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  <div class="continue__shopping d-flex justify-content-between">
+                    <a class="continue__shopping--link" href="{% url 'shop' %}">Continue shopping</a>
+                    <a class="continue__shopping--clear" href="{% url 'clear_cart' %}">Clear Cart</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="cart__summary border-radius-10">
+                  <div class="cart__summary--total mb-20">
+                    <table class="cart__summary--total__table">
+                      <tbody>
+                        <tr class="cart__summary--total__list">
+                          <td class="cart__summary--total__title text-left">SUBTOTAL (Original)</td>
+                          <td class="cart__summary--amount text-right">₹{{ total_original|floatformat:2 }}</td>
+                        </tr>
+                        <tr class="cart__summary--total__list">
+                          <td class="cart__summary--total__title text-left">SUBTOTAL (Discounted)</td>
+                          <td class="cart__summary--amount text-right">₹{{ total_discounted|floatformat:2 }}</td>
+                        </tr>
+                        <tr class="cart__summary--total__list">
+                          <td class="cart__summary--total__title text-left">YOU SAVE</td>
+                          <td class="cart__summary--amount text-right">₹{{ total_savings|floatformat:2 }}</td>
+                        </tr>
+                        <tr class="cart__summary--total__list">
+                          <td class="cart__summary--total__title text-left">GRAND TOTAL</td>
+                          <td class="cart__summary--amount text-right">₹{{ total_discounted|floatformat:2 }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="cart__summary--footer">
+  <p class="cart__summary--footer__desc">Shipping & taxes calculated at checkout</p>
+  <ul class="d-flex justify-content-between">
+    <li>
+      {% if cart_items %}
+        {% with has_out_of_stock=False %}
+          {% for item in cart_items %}
+            {% if item.size.stock == 0 %}
+              {% with has_out_of_stock=True %}
+              {% endwith %}
+            {% endif %}
+          {% endfor %}
+          {% if has_out_of_stock %}
+            <button class="cart__summary--footer__btn primary__btn checkout" disabled title="Remove out-of-stock items to proceed">Check Out</button>
+            <p class="text-danger mt-2">Please remove out-of-stock items to proceed to checkout.</p>
+          {% else %}
+            <a class="cart__summary--footer__btn primary__btn checkout" href="{% url 'checkout' %}">Check Out</a>
+          {% endif %}
+        {% endwith %}
+      {% endif %}
+    </li>
+  </ul>
+</div>
+                </div>
+              </div>
+            </div>
+            {% else %}
+            <p>Your cart is empty. <a href="{% url 'shop' %}">Continue shopping</a>.</p>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+    </section>
+    <!-- cart section end -->
+  </main>
+
+    <footer class="footer__section bg__black">
+        <div class="container-fluid">
+            <div class="main__footer d-flex justify-content-between">
+                <div class="footer__widget footer__widget--width">
+                    <h2 class="footer__widget--title text-ofwhite h3">About Us 
+                        <button class="footer__widget--button" aria-label="footer widget button">
+                            <svg class="footer__widget--title__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12.355" height="8.394" viewBox="0 0 10.355 6.394">
+                                <path  d="M15.138,8.59l-3.961,3.952L7.217,8.59,6,9.807l5.178,5.178,5.178-5.178Z" transform="translate(-6 -8.59)" fill="currentColor"></path>
+                            </svg>
+                        </button>
+                    </h2>
+                    <div class="footer__widget--inner">
+                        <p class="footer__widget--desc text-ofwhite mb-20">Lorem ipsum dolor sit amet, consectetur adipisici ti elit <br> seddo eiusmod tempor incididunt utlabore et dolore <br> magna aliqua  enim ad minim veniam quisnostrud <br> exercitation ullamco</p>
+                        <div class="footer__social">
+                           
+                        </div>
+                    </div>
+                </div>
+                <div class="footer__widget--menu__wrapper d-flex footer__widget--width">
+                    <div class="footer__widget">
+                        
+                    </div>
+                    <div class="footer__widget">
+                        
+                    </div>
+                </div>
+                <div class="footer__widget footer__widget--width">
+                    
+                    <div class="footer__instagram footer__widget--inner">
+                        <div class="footer__instagram--list d-flex">
+                            
+                        </div>
+                        <div class="footer__instagram--list d-flex">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="footer__widget footer__widget--width">
+                   <h1 style="color: #fff;">LB</h1>
+                </div>
+            </div>
+            <div class="footer__bottom d-flex justify-content-between align-items-center">
+                <p class="copyright__content text-ofwhite m-0">Copyright © 2022 <a class="copyright__content--link" href="index.html">Suruchi</a> . All Rights Reserved.Design By Suruchi</p>
+                <div class="footer__payment text-right">
+                    <img class="display-block" src="{% static 'assets/img/other/payment-visa-card.png' %}" alt="visa-card">
+                </div>
+            </div>
+        </div>
+    </footer>
+  <!-- End footer section -->
+
+  <!-- Scroll top bar -->
+  <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
+
+  <!-- All Script JS Plugins here -->
+  <script src="{% static 'assets/js/vendor/popper.js' %}" defer="defer"></script>
+  <script src="{% static 'assets/js/vendor/bootstrap.min.js' %}" defer="defer"></script>
+  <script src="{% static 'assets/js/plugins/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'assets/js/plugins/glightbox.min.js' %}"></script>
+  <script src="{% static 'assets/js/script.js' %}"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.quantity__value').forEach(button => {
+        button.addEventListener('click', function() {
+          const itemId = this.getAttribute('data-item-id');
+          const action = this.classList.contains('increase') ? 'increment' : 'decrement';
+          console.log('Button clicked:', { itemId, action });
+
+          fetch(`/cart/update/${itemId}/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ action })
+          })
+          .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+              return response.text().then(text => {
+                throw new Error(`HTTP error! status: ${response.status}, response: ${text.substring(0, 100)}...`);
+              });
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log('Response data:', data);
+            if (data.success) {
+              if (data.message === 'Item removed from cart.') {
+                console.log('Reloading page for item removal');
+                location.reload();
+              } else {
+                const row = this.closest('tr');
+                const quantityInput = row.querySelector('.quantity__number');
+                const totalCell = row.querySelector('.cart__price.end');
+                const priceCell = row.querySelector('.cart__price');
+
+                if (quantityInput) {
+                  quantityInput.value = data.quantity;
+                  console.log('Updated quantity:', data.quantity);
+                } else {
+                  console.error('Quantity input not found');
+                }
+
+                if (totalCell) {
+                  totalCell.innerHTML = `
+                    <span class="cart__price--discounted">₹${data.item_total.toFixed(2)}</span>
+                    ${data.item_total !== data.item_original_total ? `
+                    <span class="cart__price--original">₹${data.item_original_total.toFixed(2)}</span>
+                    <div class="cart__savings">You Save: ₹${(data.item_original_total - data.item_total).toFixed(2)}</div>
+                    ` : ''}
+                  `;
+                  console.log('Updated item total:', data.item_total);
+                } else {
+                  console.error('Total cell not found');
+                }
+
+                document.querySelector('.cart__summary--total__table').innerHTML = `
+                  <tbody>
+                    <tr class="cart__summary--total__list">
+                      <td class="cart__summary--total__title text-left">SUBTOTAL (Original)</td>
+                      <td class="cart__summary--amount text-right">₹${data.cart_total_original.toFixed(2)}</td>
+                    </tr>
+                    <tr class="cart__summary--total__list">
+                      <td class="cart__summary--total__title text-left">SUBTOTAL (Discounted)</td>
+                      <td class="cart__summary--amount text-right">₹${data.cart_total_discounted.toFixed(2)}</td>
+                    </tr>
+                    <tr class="cart__summary--total__list">
+                      <td class="cart__summary--total__title text-left">YOU SAVE</td>
+                      <td class="cart__summary--amount text-right">₹${data.savings.toFixed(2)}</td>
+                    </tr>
+                    <tr class="cart__summary--total__list">
+                      <td class="cart__summary--total__title text-left">GRAND TOTAL</td>
+                      <td class="cart__summary--amount text-right">₹${data.cart_total_discounted.toFixed(2)}</td>
+                    </tr>
+                  </tbody>
+                `;
+              }
+            } else {
+              console.error('Update failed:', data.message);
+              alert(data.message);
+            }
+          })
+          .catch(error => {
+            console.error('Fetch error:', error);
+            alert(`Failed to update cart: ${error.message}`);
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>
